@@ -22,3 +22,8 @@ def get_api_key(username: Optional[str], password: Optional[str]):
         return response
     except errors.UsernameOrPasswordIncorrectError:
         raise HTTPException(status_code=401, detail="incorrect username or password")
+
+
+@app.get("/verifyApiKey", status_code=200)
+def verify_api_key(api_key: str):
+    return database.verify_api_key(api_key)

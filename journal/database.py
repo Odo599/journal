@@ -1,5 +1,6 @@
 import secrets
 import sqlite3
+from typing import Union
 
 from argon2 import PasswordHasher
 
@@ -68,3 +69,13 @@ def create_api_key(username: str):
     conn.commit()
     conn.close()
     return key
+
+
+def verify_api_key(api_key: str) -> Union[bool, str]:
+    conn, cursor = connect()
+    cursor.execute("SELECT * FROM api_keys WHERE keytext=? LIMIT 1;", (api_key,))
+    row = cursor.fetchone()
+    if row is None:
+        return False
+    else:
+        return row[1]
