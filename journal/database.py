@@ -1,6 +1,10 @@
-import sqlite3
-from . import errors
 import secrets
+import sqlite3
+
+from argon2 import PasswordHasher
+
+from . import errors
+from . import auth
 
 database_file = "instance/data.db"
 sql_file = "journal/schema.sql"
@@ -29,9 +33,11 @@ def init_db():
 
 
 def add_user(username: str, password: str):
+    ph = PasswordHasher()
     conn, cursor = connect()
+    hsh = ph.hash(password)
     try:
-        cursor.execute("INSERT INTO user (username, password) VALUES (?,?);", (username, password))
+        cursor.execute("INSERT INTO user (username, hash) VALUES (?,?);", (username, hsh))
         conn.commit()
     except sqlite3.IntegrityError:
         raise errors.UsernameTakenError
@@ -40,13 +46,14 @@ def add_user(username: str, password: str):
 
 
 def check_login(username: str, password: str):
+    ph = PasswordHasher()
     conn, cursor = connect()
     cursor.execute("SELECT * FROM user WHERE username=? LIMIT 1;", (username,))
     row = cursor.fetchone()
     conn.close()
     if row is None:
         raise errors.UsernameOrPasswordIncorrectError
-    elif row[1] != username or row[2] != password:
+    elif row[1] != username or not auth.check_login(password, row[2]):
         raise errors.UsernameOrPasswordIncorrectError
     else:
         return create_api_key(username)
