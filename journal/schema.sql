@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS entries
 
 CREATE TABLE IF NOT EXISTS api_keys
 (
-    id      INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    keytext TEXT    NOT NULL,
-    FOREIGN KEY (id) references user (id)
+    id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    username INTEGER NOT NULL,
+    keytext  TEXT    NOT NULL,
+    FOREIGN KEY (username) references user (username)
 )

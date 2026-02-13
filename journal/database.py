@@ -1,5 +1,6 @@
 import sqlite3
 from . import errors
+import secrets
 
 database_file = "instance/data.db"
 sql_file = "journal/schema.sql"
@@ -40,11 +41,23 @@ def add_user(username: str, password: str):
 
 def check_login(username: str, password: str):
     conn, cursor = connect()
-    cursor.execute("SELECT * FROM user WHERE username=? LIMIT 1", (username,))
+    cursor.execute("SELECT * FROM user WHERE username=? LIMIT 1;", (username,))
     row = cursor.fetchone()
+    conn.close()
     if row is None:
         raise errors.UsernameOrPasswordIncorrectError
     elif row[1] != username or row[2] != password:
         raise errors.UsernameOrPasswordIncorrectError
     else:
-        return True
+        return create_api_key(username)
+
+
+def create_api_key(username: str):
+    key = secrets.token_urlsafe(32)
+    conn, cursor = connect()
+    cursor.execute(
+        "INSERT INTO api_keys (username, keytext) VALUES (?,?);",
+        (username, key))
+    conn.commit()
+    conn.close()
+    return key
