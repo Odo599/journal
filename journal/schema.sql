@@ -1,16 +1,23 @@
-DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS entries;
-
-CREATE TABLE user (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE IF NOT EXISTS user
+(
+    id       INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL
+    password TEXT        NOT NULL
 );
 
-CREATE TABLE entries (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    author_id INTEGER NOT NULL,
-    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    body TEXT NOT NULl,
+CREATE TABLE IF NOT EXISTS entries
+(
+    id        INTEGER PRIMARY KEY AUTOINCREMENT,
+    author_id INTEGER   NOT NULL,
+    created   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    body      TEXT      NOT NULl,
     FOREIGN KEY (author_id) references user (id)
 );
+
+CREATE TABLE IF NOT EXISTS api_keys
+(
+    id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    keytext TEXT    NOT NULL,
+    FOREIGN KEY (id) references user (id)
+)

@@ -1,4 +1,5 @@
 import sqlite3
+from . import errors
 
 database_file = "instance/data.db"
 sql_file = "journal/schema.sql"
@@ -26,16 +27,24 @@ def init_db():
             conn.close()
 
 
-class UsernameTakenError(Exception):
-    pass
-
-
-def add_user(uname, pwd):
+def add_user(username: str, password: str):
     conn, cursor = connect()
     try:
-        cursor.execute("INSERT INTO user (username, password) VALUES (?,?);", (uname, pwd))
+        cursor.execute("INSERT INTO user (username, password) VALUES (?,?);", (username, password))
         conn.commit()
     except sqlite3.IntegrityError:
-        raise UsernameTakenError
+        raise errors.UsernameTakenError
     finally:
         conn.close()
+
+
+def check_login(username: str, password: str):
+    conn, cursor = connect()
+    cursor.execute("SELECT * FROM user WHERE username=? LIMIT 1", (username,))
+    row = cursor.fetchone()
+    if row is None:
+        raise errors.UsernameOrPasswordIncorrectError
+    elif row[1] != username or row[2] != password:
+        raise errors.UsernameOrPasswordIncorrectError
+    else:
+        return True
