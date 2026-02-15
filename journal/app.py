@@ -43,3 +43,11 @@ def get_entry(api_key: str, entry_id: int):
     if not user:
         raise HTTPException(status_code=403, detail="api key invalid")
     return database.get_entry(user, entry_id)
+
+
+@app.delete("/entries/{entry_id}", status_code=204)
+def delete_entry(api_key: str, entry_id: int):
+    user = database.verify_api_key(api_key)
+    if not user:
+        raise HTTPException(status_code=403, detail="api key invalid")
+    database.delete_entry(user, entry_id)

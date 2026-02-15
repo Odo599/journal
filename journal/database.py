@@ -118,3 +118,14 @@ def get_entry(username: str, entry_id: int) -> row_types.EntryRow:
         "created": row[2],
         "body": row[3]
     }
+
+
+def delete_entry(username: str, entry_id: int):
+    uid = get_uid(username)
+    conn, cursor = connect()
+    entry = get_entry(username, entry_id)
+    if entry["author_id"] != uid:
+        raise HTTPException(status_code=404, detail="entry not found")
+    cursor.execute("DELETE FROM entries WHERE id=?", (entry_id,))
+    conn.commit()
+    conn.close()
