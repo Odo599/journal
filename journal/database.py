@@ -75,6 +75,7 @@ def verify_api_key(api_key: str) -> Union[bool, str]:
     conn, cursor = connect()
     cursor.execute("SELECT * FROM api_keys WHERE keytext=? LIMIT 1;", (api_key,))
     row = cursor.fetchone()
+    conn.close()
     if row is None:
         return False
     else:
