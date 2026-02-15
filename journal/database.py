@@ -3,9 +3,11 @@ import sqlite3
 from typing import Union
 
 from argon2 import PasswordHasher
+from fastapi import HTTPException
 
-from . import errors
+from . import row_types
 from . import auth
+from . import errors
 
 database_file = "instance/data.db"
 sql_file = "journal/schema.sql"
@@ -80,3 +82,39 @@ def verify_api_key(api_key: str) -> Union[bool, str]:
         return False
     else:
         return row[1]
+
+
+def get_uid(username: str) -> int:
+    conn, cursor = connect()
+    cursor.execute("SELECT * FROM user WHERE username=? LIMIT 1;", (username,))
+    row = cursor.fetchone()
+    conn.close()
+    if row is None:
+        raise errors.UsernameNotFoundError
+    return row[0]
+
+
+def create_entry(username: str, text: str):
+    uid = get_uid(username)
+    conn, cursor = connect()
+    cursor.execute("INSERT INTO entries (author_id, body) VALUES (?,?);", (uid, text))
+    conn.commit()
+    conn.close()
+
+
+def get_entry(username: str, entry_id: int) -> row_types.EntryRow:
+    uid = get_uid(username)
+    conn, cursor = connect()
+    cursor.execute("SELECT * FROM entries WHERE id=? LIMIT 1;", (entry_id,))
+    row = cursor.fetchone()
+    conn.close()
+    if row is None:
+        raise HTTPException(status_code=404, detail="entry not found")
+    elif row[1] != uid:
+        raise HTTPException(status_code=404, detail="entry not found")
+    return {
+        "id": row[0],
+        "author_id": row[1],
+        "created": row[2],
+        "body": row[3]
+    }
