@@ -4,14 +4,19 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="09ea5f91-83d3-4043-8b7f-a9a9783369d4" name="Changes" comment="initial project commit">
+    <list default="true" id="09ea5f91-83d3-4043-8b7f-a9a9783369d4" name="Changes" comment="added basic home page">
+      <change afterPath="$PROJECT_DIR$/app/(tabs)/_layout.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/(tabs)/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/components/TopHeader.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/styles.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/journal.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/journal.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/app.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dev/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dev/index.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dev/palette.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dev/previews.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dev/useInitial.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/_layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/index.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,24 +34,29 @@
         <option value="com.intellij.reactbuddy.index" />
         <option value="com.intellij.reactbuddy.useInitial" />
         <option value="com.intellij.reactbuddy.README" />
+        <option value="TypeScript File" />
+        <option value="TypeScript JSX File" />
       </list>
     </option>
+  </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Odo599"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Odo599&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Odo599/journal-app.git",
-    "accountId": "d9fad65a-16ac-4b08-bb84-040970b49f18"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Odo599/journal-app.git&quot;,
+    &quot;accountId&quot;: &quot;d9fad65a-16ac-4b08-bb84-040970b49f18&quot;
   }
-}]]></component>
+}</component>
   <component name="NamedScopeManager">
     <scope name="Mine" pattern="file[journal]:dev//*||file[journal]:app//*||file:.gitignore||file:app.json||file:eslint.config.js||file:expo-env.d.ts||file:package-lock.json||file:package.json||file:README.md||file:tsconfig.json||file[journal]:assets//*" />
   </component>
@@ -54,7 +64,7 @@
     <dismissed value="$PROJECT_DIR$/package.json" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
@@ -67,7 +77,9 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "JavaScript Debug.localhost:8081.executor": "Debug",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "ReactCreateComponentLastSelected": "functionDeclarationComponent",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
@@ -88,7 +100,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "AndroidSdkUpdater",
+    "settings.editor.selected.configurable": "actions.on.save",
     "to.speed.mode.migration.done": "true",
     "ts.external.directory.path": "/Users/odo59/journal/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
@@ -101,6 +113,22 @@
         <entry key="com.intellij.reactbuddy.reactInspector" value="false" />
       </map>
     </option>
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/(tabs)" />
+      <recent name="$PROJECT_DIR$/assets/fonts" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="localhost:8081" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:8081">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JavaScript Debug.localhost:8081" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -116,7 +144,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1771204988808</updated>
-      <workItem from="1771222167719" duration="707000" />
+      <workItem from="1771222167719" duration="2957000" />
+      <workItem from="1771308420684" duration="6769000" />
     </task>
     <task id="LOCAL-00001" summary="initial project commit">
       <option name="closed" value="true" />
@@ -126,7 +155,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771222646602</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="fixed default errors">
+      <option name="closed" value="true" />
+      <created>1771223026225</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1771223026225</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -145,6 +182,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial project commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="initial project commit" />
+    <MESSAGE value="fixed default errors" />
+    <MESSAGE value="added basic home page" />
+    <option name="LAST_COMMIT_MESSAGE" value="added basic home page" />
   </component>
 </project>
