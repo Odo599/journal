@@ -1,10 +1,24 @@
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from . import database
 from . import errors
 
 app = FastAPI()
+
+origins = [
+    "http://127.0.0.1:8081",
+    "http://localhost:8081",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.post("/createUser", status_code=201)
