@@ -1,8 +1,6 @@
 // noinspection JSUnusedGlobalSymbols
 
 import {Stack} from "expo-router";
-import styles from "@/app/styles"
-import {SafeAreaView} from "react-native-safe-area-context";
 import {StatusBar} from "react-native";
 
 export default function RootLayout() {
@@ -10,14 +8,12 @@ export default function RootLayout() {
         <>
             <StatusBar
                 barStyle="dark-content"
-                backgroundColor={styles.topHeader.backgroundColor}
+                backgroundColor="#FF00000"
                 translucent={false}
             />
-            <SafeAreaView style={{flex: 1, backgroundColor: styles.topHeader.backgroundColor}}>
-                <Stack>
-                    <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
-                </Stack>
-            </SafeAreaView>
+            <Stack>
+                <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
+            </Stack>
         </>
 
     );

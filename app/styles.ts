@@ -13,6 +13,9 @@ const styles = StyleSheet.create({
         fontSize: 50,
         fontWeight: 700,
         fontFamily: "SourceSansPro_700Bold"
+    },
+    background: {
+        backgroundColor: "#FFF"
     }
 })
 export default styles;
