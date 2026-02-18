@@ -4,14 +4,17 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="09ea5f91-83d3-4043-8b7f-a9a9783369d4" name="Changes" comment="added navigation and status bar colour">
-      <change afterPath="$PROJECT_DIR$/app/localdb/credentials.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/settings/Menu.tsx" afterDir="false" />
+    <list default="true" id="09ea5f91-83d3-4043-8b7f-a9a9783369d4" name="Changes" comment="added safe area">
+      <change afterPath="$PROJECT_DIR$/app/remote/createUser.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/settings/CreateUser.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/styles/CreateUserStyles.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/styles/styles.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/editor.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/pages/editor.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(tabs)/menu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/menu.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/_layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/styles.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/components/TopHeader.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/TopHeader.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/settings/Menu.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/styles/TopHeaderStyles.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
@@ -96,6 +99,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "npm.start.executor": "Run",
     "run.code.analysis.last.selected.profile": "pProject Default",
     "settings.editor.selected.configurable": "actions.on.save",
     "to.speed.mode.migration.done": "true",
@@ -108,16 +112,30 @@
       <map>
         <entry key="com.intellij.reactbuddy.reactComponents" value="false" />
         <entry key="com.intellij.reactbuddy.reactInspector" value="false" />
+        <entry key="com.intellij.reactbuddy.storybook" value="false" />
       </map>
     </option>
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/styles" />
       <recent name="$PROJECT_DIR$/app/pages" />
       <recent name="$PROJECT_DIR$/app" />
       <recent name="$PROJECT_DIR$/app/(tabs)" />
       <recent name="$PROJECT_DIR$/assets/fonts" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="start" type="js.build_tools.npm" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="start" />
+      <node-interpreter value="project" />
+      <envs />
+      <EXTENSION ID="com.intellij.javascript.debugger.execution.StartBrowserRunConfigurationExtension">
+        <browser name="98ca6316-2f89-46d9-a9e5-fa9e2b0625b3" with-js-debugger="true" />
+      </EXTENSION>
+      <method v="2" />
+    </configuration>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -134,7 +152,8 @@
       <option name="presentableId" value="Default" />
       <updated>1771204988808</updated>
       <workItem from="1771222167719" duration="2957000" />
-      <workItem from="1771308420684" duration="11815000" />
+      <workItem from="1771308420684" duration="17400000" />
+      <workItem from="1771398501351" duration="2718000" />
     </task>
     <task id="LOCAL-00001" summary="initial project commit">
       <option name="closed" value="true" />
@@ -168,7 +187,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771363457327</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="added safe area">
+      <option name="closed" value="true" />
+      <created>1771378008435</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1771378008435</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -190,6 +217,7 @@
     <MESSAGE value="fixed default errors" />
     <MESSAGE value="added basic home page" />
     <MESSAGE value="added navigation and status bar colour" />
-    <option name="LAST_COMMIT_MESSAGE" value="added navigation and status bar colour" />
+    <MESSAGE value="added safe area" />
+    <option name="LAST_COMMIT_MESSAGE" value="added safe area" />
   </component>
 </project>

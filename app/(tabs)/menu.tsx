@@ -1,7 +1,7 @@
-import {Text} from "react-native"
+import CreateUser from "@/app/settings/CreateUser";
 
 export default function Menu() {
     return (
-        <Text>TODO add menu</Text>
+        <CreateUser/>
     )
 }
