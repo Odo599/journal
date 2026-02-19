@@ -1,13 +1,23 @@
-import {Pressable, Text, TextInput, View} from "react-native";
+import {Text, TextInput, View} from "react-native";
 import React from 'react';
 import styles from "@/app/styles/styles";
 import createUserStyles from "@/app/styles/CreateUserStyles";
 import createUser from "@/app/remote/createUser";
+import FullWidthButton from "@/app/components/FullWidthButton";
 
 export default function CreateUser() {
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [emptyInputErrorShown, setEmptyInputErrorShown] = React.useState(false)
+
+    function onCreateUserButtonPress() {
+        if (username !== "" && password !== "") {
+            createUser(username, password)
+            setEmptyInputErrorShown(false)
+        } else {
+            setEmptyInputErrorShown(true)
+        }
+    }
 
     return (
         <>
@@ -23,19 +33,7 @@ export default function CreateUser() {
                     onChangeText={setPassword}
                     value={password}
                 />
-                <Pressable
-                    style={styles.fullWidthButton}
-                    onPress={() => {
-                        if (username !== "" && password !== "") {
-                            createUser(username, password)
-                            setEmptyInputErrorShown(false)
-                        } else {
-                            setEmptyInputErrorShown(true)
-                        }
-                    }}
-                >
-                    <Text>Create User</Text>
-                </Pressable>
+                <FullWidthButton text={"Create User"} onPress={onCreateUserButtonPress}/>
             </View>
             {emptyInputErrorShown && (<View
             >
