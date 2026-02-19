@@ -1,9 +1,10 @@
-import {Text, TextInput, View} from "react-native";
+import {Text, View} from "react-native";
 import React from 'react';
 import styles from "@/app/styles/styles";
 import createUserStyles from "@/app/styles/CreateUserStyles";
 import createUser from "@/app/remote/createUser";
 import FullWidthButton from "@/app/components/FullWidthButton";
+import FullWidthTextInput from "@/app/components/FullWidthTextInput";
 
 export default function CreateUser() {
     const [username, setUsername] = React.useState("");
@@ -22,13 +23,11 @@ export default function CreateUser() {
     return (
         <>
             <View style={createUserStyles.createUserView}>
-                <TextInput
-                    style={styles.fullWidthTextInput}
+                <FullWidthTextInput
                     placeholder={"Enter username"}
                     onChangeText={setUsername}
                     value={username}/>
-                <TextInput
-                    style={styles.fullWidthTextInput}
+                <FullWidthTextInput
                     placeholder={"Enter password"}
                     onChangeText={setPassword}
                     value={password}
