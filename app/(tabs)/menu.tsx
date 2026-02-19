@@ -1,4 +1,4 @@
-import CreateUser from "@/app/settings/CreateUser";
+import CreateUser from "@/pages/CreateUser";
 
 export default function Menu() {
     return (
