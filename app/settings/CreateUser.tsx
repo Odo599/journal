@@ -1,10 +1,10 @@
 import {Text, View} from "react-native";
 import React from 'react';
-import styles from "@/app/styles/styles";
-import createUserStyles from "@/app/styles/CreateUserStyles";
-import createUser from "@/app/remote/createUser";
-import FullWidthButton from "@/app/components/FullWidthButton";
-import FullWidthTextInput from "@/app/components/FullWidthTextInput";
+import styles from "@/styles/styles";
+import createUserStyles from "@/styles/CreateUserStyles";
+import createUser from "@/lib/createUser";
+import FullWidthButton from "@/components/FullWidthButton";
+import FullWidthTextInput from "@/components/FullWidthTextInput";
 
 export default function CreateUser() {
     const [username, setUsername] = React.useState("");

@@ -1,4 +1,4 @@
-import styles from "@/app/styles/styles";
+import styles from "@/styles/styles";
 import {TextInput} from "react-native";
 import React from "react";
 

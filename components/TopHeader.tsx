@@ -1,5 +1,5 @@
 import {View, Text} from "react-native";
-import TopHeaderStyles from "@/app/styles/TopHeaderStyles"
+import TopHeaderStyles from "@/styles/TopHeaderStyles"
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useFonts, SourceSansPro_700Bold} from '@expo-google-fonts/source-sans-pro';
 

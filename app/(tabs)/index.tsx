@@ -1,6 +1,6 @@
 import {ScrollView, View} from "react-native";
-import TopHeader from "@/app/components/TopHeader";
-import EntriesView from "@/app/components/EntriesView";
+import TopHeader from "@/components/TopHeader";
+import EntriesView from "@/components/EntriesView";
 import {SafeAreaView} from "react-native-safe-area-context";
 
 
