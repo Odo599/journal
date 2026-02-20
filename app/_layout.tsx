@@ -12,6 +12,7 @@ export default function RootLayout() {
             />
             <Stack>
                 <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
+                <Stack.Screen name="(settingsPages)/CreateUser" options={{title: "Create User"}}/>
             </Stack>
         </>
 
