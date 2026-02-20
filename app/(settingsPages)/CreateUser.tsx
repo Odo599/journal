@@ -5,18 +5,39 @@ import createUserStyles from "@/styles/CreateUserStyles";
 import createUser from "@/lib/backend/createUser";
 import FullWidthButton from "@/components/FullWidthButton";
 import FullWidthTextInput from "@/components/FullWidthTextInput";
+import CannotConnectError from "@/lib/errors/CannotConnect";
 
 export default function CreateUser() {
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
-    const [emptyInputErrorShown, setEmptyInputErrorShown] = React.useState(false)
+    const [errorShown, setErrorShown] = React.useState(false);
+    const [errorText, setErrorText] = React.useState("")
 
-    function onCreateUserButtonPress() {
+    function showError(text: string) {
+        setErrorText(text);
+        setErrorShown(true);
+    }
+
+    function hideError() {
+        setErrorShown(false);
+        setErrorText("");
+    }
+
+    async function onCreateUserButtonPress() {
         if (username !== "" && password !== "") {
-            createUser(username, password)
-            setEmptyInputErrorShown(false)
+            try {
+                await createUser(username, password);
+                hideError();
+            } catch (error) {
+                if (error instanceof CannotConnectError) {
+                    console.error("couldn't create user")
+                    showError("Server not connected or offline!")
+                } else {
+                    console.error("an unknown network error occurred when logging in", error)
+                }
+            }
         } else {
-            setEmptyInputErrorShown(true)
+            showError("Username and password are required");
         }
     }
 
@@ -34,10 +55,10 @@ export default function CreateUser() {
                 />
                 <FullWidthButton text={"Create User"} onPress={onCreateUserButtonPress}/>
             </View>
-            {emptyInputErrorShown && (<View
+            {errorShown && (<View
             >
                 <View style={styles.centeredView}>
-                    <Text>Username and password are required</Text>
+                    <Text>{errorText}</Text>
                 </View>
             </View>)}
         </>
