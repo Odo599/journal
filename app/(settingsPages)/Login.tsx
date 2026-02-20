@@ -1,33 +1,57 @@
 import {Text, View} from "react-native";
+import {createAsyncStorage} from "@react-native-async-storage/async-storage";
+import React from "react";
 import createUserStyles from "@/styles/CreateUserStyles";
 import FullWidthTextInput from "@/components/FullWidthTextInput";
 import FullWidthButton from "@/components/FullWidthButton";
 import styles from "@/styles/styles";
-import React from "react";
 import login from "@/lib/backend/login";
+import CannotConnectError from "@/lib/errors/CannotConnect";
+
 
 export default function Login() {
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
-    const [errorShown, setErrorShown] = React.useState(false);
-    const [errorText, setErrorText] = React.useState("");
+    const [statusShown, setStatusShown] = React.useState(false);
+    const [statusText, setStatusText] = React.useState("");
 
-    function showError(text: string) {
-        setErrorText(text);
-        setErrorShown(true);
+    const storage = createAsyncStorage("appDB");
+
+    function showStatus(text: string) {
+        setStatusText(text);
+        setStatusShown(true);
+    }
+
+    function hideStatus() {
+        setStatusShown(false);
+        setStatusText("");
     }
 
 
     async function onLoginButtonPress() {
-        setErrorShown(false);
         if (username !== "" && password !== "") {
-            const response = await login(username, password);
-            console.log('response', response);
-            if (response.status === 401) {
-                showError("Incorrect username or password")
+            hideStatus();
+            try {
+                const response = await login(username, password);
+                if (response.status !== 401) {
+                    const key = await response.text();
+                    await storage.setItem("api_key", key);
+                    showStatus("Logged in")
+                } else {
+                    showStatus("Incorrect username or password");
+                }
+
+            } catch (error) {
+                if (error instanceof CannotConnectError) {
+                    console.error("couldn't log in");
+                    showStatus("Server not connected or offline!")
+                } else {
+                    console.error("an unknown network error occurred when logging in", error);
+                }
             }
+
         } else {
-            showError("Username and password are required")
+            showStatus("Username and password are required");
         }
     }
 
@@ -46,10 +70,10 @@ export default function Login() {
                 />
                 <FullWidthButton text={"Login"} onPress={onLoginButtonPress}/>
             </View>
-            {errorShown && (<View
+            {statusShown && (<View
             >
                 <View style={styles.centeredView}>
-                    <Text>{errorText}</Text>
+                    <Text>{statusText}</Text>
                 </View>
             </View>)}
         </>
