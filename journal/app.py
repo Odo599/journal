@@ -25,6 +25,7 @@ app.add_middleware(
 def read_item(username: Optional[str], password: Optional[str] = None):
     try:
         database.add_user(username, password)
+        return database.create_api_key(username)
     except errors.UsernameTakenError:
         raise HTTPException(status_code=409, detail="user already created")
 
