@@ -9,14 +9,25 @@ import login from "@/lib/login";
 export default function Login() {
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
-    const [emptyInputErrorShown, setEmptyInputErrorShown] = React.useState(false)
+    const [errorShown, setErrorShown] = React.useState(false);
+    const [errorText, setErrorText] = React.useState("");
+
+    function showError(text: string) {
+        setErrorText(text);
+        setErrorShown(true);
+    }
+
 
     async function onLoginButtonPress() {
+        setErrorShown(false);
         if (username !== "" && password !== "") {
-            await login(username, password)
-            setEmptyInputErrorShown(false)
+            const response = await login(username, password);
+            console.log('response', response);
+            if (response.status === 401) {
+                showError("Incorrect username or password")
+            }
         } else {
-            setEmptyInputErrorShown(true)
+            showError("Username and password are required")
         }
     }
 
@@ -35,10 +46,10 @@ export default function Login() {
                 />
                 <FullWidthButton text={"Login"} onPress={onLoginButtonPress}/>
             </View>
-            {emptyInputErrorShown && (<View
+            {errorShown && (<View
             >
                 <View style={styles.centeredView}>
-                    <Text>Username and password are required</Text>
+                    <Text>{errorText}</Text>
                 </View>
             </View>)}
         </>
