@@ -66,3 +66,8 @@ def delete_entry(api_key: str, entry_id: int):
     if not user:
         raise HTTPException(status_code=403, detail="api key invalid")
     database.delete_entry(user, entry_id)
+
+
+@app.get("/health", status_code=200)
+def health_check():
+    return {"status": "healthy"}
