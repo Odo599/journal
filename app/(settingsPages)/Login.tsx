@@ -4,7 +4,7 @@ import FullWidthTextInput from "@/components/FullWidthTextInput";
 import FullWidthButton from "@/components/FullWidthButton";
 import styles from "@/styles/styles";
 import React from "react";
-import login from "@/lib/login";
+import login from "@/lib/backend/login";
 
 export default function Login() {
     const [username, setUsername] = React.useState("");

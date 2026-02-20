@@ -2,7 +2,7 @@ import {Text, View} from "react-native";
 import React from 'react';
 import styles from "@/styles/styles";
 import createUserStyles from "@/styles/CreateUserStyles";
-import createUser from "@/lib/createUser";
+import createUser from "@/lib/backend/createUser";
 import FullWidthButton from "@/components/FullWidthButton";
 import FullWidthTextInput from "@/components/FullWidthTextInput";
 
