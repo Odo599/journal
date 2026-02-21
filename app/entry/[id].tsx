@@ -25,6 +25,7 @@ export default function EntryEditor() {
 
     const editorRef = useRef<RichEditor>(null);
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {height, progress} = useKeyboardAnimation()
 
     function showError(text: string) {
