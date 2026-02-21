@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
-    "start-dev": "expo run --dev-client -a",
+    "start-dev": "expo --dev-client -a",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
