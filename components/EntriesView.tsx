@@ -4,24 +4,8 @@ import getEntries from "@/lib/backend/getEntries";
 import NotLoggedInError from "@/lib/errors/NotLoggedInError";
 import {useRouter} from "expo-router";
 import Entry from "@/components/Entry";
+import {EntryType, isEntry} from "@/types/EntryType";
 
-type EntryType = {
-    id: string,
-    author_id: number,
-    created: string,
-    body: string
-}
-
-function isEntry(obj: any): obj is EntryType {
-    return (
-        typeof obj === "object" &&
-        obj !== null &&
-        typeof obj.id === "number" &&
-        typeof obj.body === "string" &&
-        typeof obj.created === "string" &&
-        typeof obj.author_id === "number"
-    );
-}
 
 export default function EntriesView() {
     const router = useRouter()
@@ -59,7 +43,11 @@ export default function EntriesView() {
         <View>
             {statusShown && <Text>{statusText}</Text>}
             {entries.map((entry) => (
-                <Entry body={entry.body} created={entry.created} key={entry.id}/>
+                <Entry
+                    body={entry.body}
+                    created={entry.created}
+                    id={entry.id}
+                    key={entry.id}/>
             ))}
         </View>
     );

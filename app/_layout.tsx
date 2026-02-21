@@ -14,6 +14,7 @@ export default function RootLayout() {
                 <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
                 <Stack.Screen name="(settingsPages)/CreateUser" options={{title: "Create User"}}/>
                 <Stack.Screen name="(settingsPages)/Login" options={{title: "Login"}}/>
+                <Stack.Screen name="entry/[id]" options={{headerShown: false}}/>
             </Stack>
         </>
 
