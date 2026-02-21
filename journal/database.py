@@ -129,3 +129,20 @@ def delete_entry(username: str, entry_id: int):
     cursor.execute("DELETE FROM entries WHERE id=?", (entry_id,))
     conn.commit()
     conn.close()
+
+
+def get_entries(username):
+    uid = get_uid(username)
+    conn, cursor = connect()
+    cursor.execute("SELECT * FROM entries WHERE author_id=?", (uid,))
+    rows = cursor.fetchall()
+    conn.close()
+    entries = []
+    for row in rows:
+        entries.append({
+            "id": row[0],
+            "author_id": row[1],
+            "created": row[2],
+            "body": row[3]
+        })
+    return entries
