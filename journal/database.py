@@ -49,7 +49,6 @@ def add_user(username: str, password: str):
 
 
 def check_login(username: str, password: str):
-    ph = PasswordHasher()
     conn, cursor = connect()
     cursor.execute("SELECT * FROM user WHERE username=? LIMIT 1;", (username,))
     row = cursor.fetchone()
