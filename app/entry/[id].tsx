@@ -1,21 +1,31 @@
 import {useLocalSearchParams, useRouter} from "expo-router";
-import {View, Text, ScrollView, Pressable} from "react-native";
-import {useEffect, useState} from "react";
+import {View, Text, Pressable, Animated} from "react-native";
+import {useEffect, useRef, useState} from "react";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import {RichEditor, RichToolbar} from "react-native-pell-rich-editor";
+import {useKeyboardAnimation} from "react-native-keyboard-controller";
+
 import getEntry from "@/lib/backend/getEntry";
 import CannotConnectError from "@/lib/errors/CannotConnectError";
 import NotLoggedInError from "@/lib/errors/NotLoggedInError";
 import styles from "@/styles/styles"
 import {EntryType, isEntry} from "@/types/EntryType";
 import EntryEditorStyles from "@/styles/EntryEditorStyles";
+import {SafeAreaView} from "react-native-safe-area-context";
+
 
 export default function EntryEditor() {
     const local = useLocalSearchParams();
     const router = useRouter()
 
-    const [entry, setEntry] = useState<EntryType>()
-    const [errorText, setErrorText] = useState("")
-    const [errorShown, setErrorShown] = useState(false)
+    const [loaded, setLoaded] = useState(false);
+    const [entry, setEntry] = useState<EntryType>();
+    const [errorText, setErrorText] = useState("");
+    const [errorShown, setErrorShown] = useState(false);
+
+    const editorRef = useRef<RichEditor>(null);
+
+    const {height, progress} = useKeyboardAnimation()
 
     function showError(text: string) {
         setErrorText(text);
@@ -43,6 +53,7 @@ export default function EntryEditor() {
                     const entry = await response.json()
                     if (isEntry(entry)) {
                         setEntry(entry)
+                        setLoaded(true)
                     }
                 } catch (error) {
                     if (error instanceof CannotConnectError) {
@@ -60,29 +71,52 @@ export default function EntryEditor() {
     }, [local.id, router])
 
     return (
-        <>
+        <View style={{flex: 1}}>
             {errorShown &&
-                <View style={styles.centeredView}>
-                    <Text>{errorText}</Text>
-                </View>
+                <SafeAreaView>
+                    <View style={styles.centeredView}>
+                        <Text>{errorText}</Text>
+                    </View>
+                </SafeAreaView>
             }
-            <View>
-                <View style={EntryEditorStyles.header}>
-                    <Pressable onPress={goBack}>
-                        <MaterialIcons
-                            name="arrow-back"
-                            size={30} color="black"
-                            style={EntryEditorStyles.backIcon}/>
-                    </Pressable>
-                    <Text style={EntryEditorStyles.title}>{entry?.created}</Text>
-                </View>
-                <ScrollView>
-                    <Text>
-                        {entry?.body}
-                    </Text>
-                </ScrollView>
+            {loaded &&
+                (<>
 
-            </View>
-        </>
+                    <SafeAreaView style={EntryEditorStyles.editorView}>
+                        <View style={EntryEditorStyles.header}>
+                            <Pressable onPress={goBack}>
+                                <MaterialIcons
+                                    name="arrow-back"
+                                    size={30} color="black"
+                                    style={EntryEditorStyles.backIcon}/>
+                            </Pressable>
+                            <Text style={EntryEditorStyles.title}>{entry?.created}</Text>
+                        </View>
+                        <View style={EntryEditorStyles.editor}>
+                            <RichEditor
+                                ref={editorRef}
+                                initialContentHTML={entry?.body}
+                                onChange={(text) => {
+                                    console.log(text)
+                                }}
+                                style={{flex: 1}}
+
+                            />
+                        </View>
+
+
+                        <Animated.View
+                            style={{
+                                transform: [{translateY: height}],
+                            }}
+                        >
+                            <RichToolbar
+                                editor={editorRef}
+                            />
+                        </Animated.View>
+                    </SafeAreaView>
+
+                </>)}
+        </View>
     )
 }
