@@ -5,7 +5,7 @@ import createUserStyles from "@/styles/CreateUserStyles";
 import createUser from "@/lib/backend/createUser";
 import FullWidthButton from "@/components/FullWidthButton";
 import FullWidthTextInput from "@/components/FullWidthTextInput";
-import CannotConnectError from "@/lib/errors/CannotConnect";
+import CannotConnectError from "@/lib/errors/CannotConnectError";
 
 export default function CreateUser() {
     const [username, setUsername] = React.useState("");

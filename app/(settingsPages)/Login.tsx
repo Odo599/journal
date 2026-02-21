@@ -6,7 +6,7 @@ import FullWidthTextInput from "@/components/FullWidthTextInput";
 import FullWidthButton from "@/components/FullWidthButton";
 import styles from "@/styles/styles";
 import login from "@/lib/backend/login";
-import CannotConnectError from "@/lib/errors/CannotConnect";
+import CannotConnectError from "@/lib/errors/CannotConnectError";
 
 
 export default function Login() {

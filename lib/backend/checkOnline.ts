@@ -1,4 +1,4 @@
-import CannotConnectError from "@/lib/errors/CannotConnect";
+import CannotConnectError from "@/lib/errors/CannotConnectError";
 
 export default async function checkOnline() {
     try {
