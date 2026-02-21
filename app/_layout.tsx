@@ -2,9 +2,10 @@
 
 import {Stack} from "expo-router";
 import {StatusBar} from "react-native";
+import {StrictMode} from 'react';
 
 export default function RootLayout() {
-    return (<>
+    return (<StrictMode>
             <StatusBar
                 barStyle="dark-content"
                 backgroundColor="#FF00000"
@@ -16,7 +17,7 @@ export default function RootLayout() {
                 <Stack.Screen name="(settingsPages)/Login" options={{title: "Login"}}/>
                 <Stack.Screen name="entry/[id]" options={{headerShown: false}}/>
             </Stack>
-        </>
+        </StrictMode>
 
     );
 }
