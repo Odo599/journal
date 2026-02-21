@@ -25,8 +25,7 @@ export default function EntryEditor() {
 
     const editorRef = useRef<RichEditor>(null);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const {height, progress} = useKeyboardAnimation()
+    const {height} = useKeyboardAnimation()
 
     function showError(text: string) {
         setErrorText(text);
@@ -104,8 +103,6 @@ export default function EntryEditor() {
 
                             />
                         </View>
-
-
                         <Animated.View
                             style={{
                                 transform: [{translateY: height}],
