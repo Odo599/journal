@@ -1,5 +1,5 @@
 import {Text, View} from "react-native";
-import {createAsyncStorage} from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from "react";
 import createUserStyles from "@/styles/CreateUserStyles";
 import FullWidthTextInput from "@/components/FullWidthTextInput";
@@ -14,8 +14,6 @@ export default function Login() {
     const [password, setPassword] = React.useState("");
     const [statusShown, setStatusShown] = React.useState(false);
     const [statusText, setStatusText] = React.useState("");
-
-    const storage = createAsyncStorage("appDB");
 
     function showStatus(text: string) {
         setStatusText(text);
@@ -35,7 +33,7 @@ export default function Login() {
                 const response = await login(username, password);
                 if (response.status !== 401) {
                     const key = await response.text();
-                    await storage.setItem("api_key", key);
+                    await AsyncStorage.setItem("api_key", key);
                     showStatus("Logged in")
                 } else {
                     showStatus("Incorrect username or password");
@@ -69,13 +67,11 @@ export default function Login() {
                     value={password}
                 />
                 <FullWidthButton text={"Login"} onPress={onLoginButtonPress}/>
+                {(statusShown &&
+                    <View style={styles.centeredView}>
+                        <Text>{statusText}</Text>
+                    </View>)}
             </View>
-            {statusShown && (<View
-            >
-                <View style={styles.centeredView}>
-                    <Text>{statusText}</Text>
-                </View>
-            </View>)}
         </>
     );
 }

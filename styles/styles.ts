@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     centeredView: {
-        flex: 1,
+        marginTop: 10,
         justifyContent: 'center',
         alignItems: 'center'
     }
