@@ -1,5 +1,6 @@
 import secrets
 import sqlite3
+import time
 from typing import Union
 
 from argon2 import PasswordHasher
@@ -94,36 +95,34 @@ def get_uid(username: str) -> int:
 
 
 def create_entry(username: str, text: str):
-    uid = get_uid(username)
     conn, cursor = connect()
-    cursor.execute("INSERT INTO entries (author_id, body) VALUES (?,?);", (uid, text))
+    cursor.execute("INSERT INTO entries (author_username, body) VALUES (?,?);", (username, text))
     conn.commit()
     conn.close()
 
 
 def get_entry(username: str, entry_id: int) -> row_types.EntryRow:
-    uid = get_uid(username)
     conn, cursor = connect()
     cursor.execute("SELECT * FROM entries WHERE id=? LIMIT 1;", (entry_id,))
     row = cursor.fetchone()
     conn.close()
     if row is None:
         raise HTTPException(status_code=404, detail="entry not found")
-    elif row[1] != uid:
+    elif row[1] != username:
         raise HTTPException(status_code=404, detail="entry not found")
     return {
         "id": row[0],
-        "author_id": row[1],
+        "author_username": row[1],
         "created": row[2],
-        "body": row[3]
+        "body": row[3],
+        "last_edited": row[4]
     }
 
 
 def delete_entry(username: str, entry_id: int):
-    uid = get_uid(username)
     conn, cursor = connect()
     entry = get_entry(username, entry_id)
-    if entry["author_id"] != uid:
+    if entry["author_username"] != username:
         raise HTTPException(status_code=404, detail="entry not found")
     cursor.execute("DELETE FROM entries WHERE id=?", (entry_id,))
     conn.commit()
@@ -131,17 +130,30 @@ def delete_entry(username: str, entry_id: int):
 
 
 def get_entries(username):
-    uid = get_uid(username)
     conn, cursor = connect()
-    cursor.execute("SELECT * FROM entries WHERE author_id=?", (uid,))
+    cursor.execute("SELECT * FROM entries WHERE author_username=?", (username,))
     rows = cursor.fetchall()
     conn.close()
-    entries = []
+    entries: list[row_types.EntryRow] = []
     for row in rows:
         entries.append({
             "id": row[0],
-            "author_id": row[1],
+            "author_username": row[1],
             "created": row[2],
-            "body": row[3]
+            "body": row[3],
+            "last_edited": row[4]
         })
     return entries
+
+
+def put_entry(username: str, entry_id: int, text: str):
+    conn, cursor = connect()
+    cursor.execute("SELECT * FROM entries WHERE id=? LIMIT 1", (entry_id,))
+    entry = cursor.fetchone()
+    if entry is None:
+        raise HTTPException(status_code=404, detail="entry not found")
+    elif entry[1] != username:
+        raise HTTPException(status_code=404, detail="entry not found")
+    cursor.execute("UPDATE entries SET body=?, last_edited=? WHERE id=?", (text, time.time_ns() // 1_000_000, entry_id))
+    conn.commit()
+    conn.close()
