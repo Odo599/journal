@@ -5,13 +5,15 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import {RichEditor, RichToolbar} from "react-native-pell-rich-editor";
 import {useKeyboardAnimation} from "react-native-keyboard-controller";
 
-import getEntry from "@/lib/backend/getEntry";
 import CannotConnectError from "@/lib/errors/CannotConnectError";
 import NotLoggedInError from "@/lib/errors/NotLoggedInError";
 import styles from "@/styles/styles"
 import {EntryType, isEntry} from "@/types/EntryType";
 import EntryEditorStyles from "@/styles/EntryEditorStyles";
 import {SafeAreaView} from "react-native-safe-area-context";
+import saveEntry from "@/lib/database/saveEntry";
+import getRecentEntry from "@/lib/database/getRecentEntry";
+import NoAvailableEntryError from "@/lib/errors/NoAvailableEntryError";
 
 
 export default function EntryEditor() {
@@ -49,14 +51,13 @@ export default function EntryEditor() {
                 }, 0)
             } else {
                 try {
-                    const response = await getEntry(Number(local.id));
-                    const entry = await response.json()
+                    const entry = await getRecentEntry(Number(local.id))
                     if (isEntry(entry)) {
                         setEntry(entry)
                         setLoaded(true)
                     }
                 } catch (error) {
-                    if (error instanceof CannotConnectError) {
+                    if (error instanceof CannotConnectError || error instanceof NoAvailableEntryError) {
                         console.error("couldn't display entry in editor, not connected")
                         showError("Couldn't connect to server, please retry or connect to internet.")
                     } else if (error instanceof NotLoggedInError) {
@@ -80,7 +81,7 @@ export default function EntryEditor() {
                 </SafeAreaView>
             }
             {loaded &&
-                (<>
+                <>
 
                     <SafeAreaView style={EntryEditorStyles.editorView}>
                         <View style={EntryEditorStyles.header}>
@@ -97,7 +98,11 @@ export default function EntryEditor() {
                                 ref={editorRef}
                                 initialContentHTML={entry?.body}
                                 onChange={(text) => {
-                                    console.log(text)
+                                    if (entry?.id !== undefined) {
+                                        void saveEntry(entry.id, text, entry.created, entry.author_id);
+                                    } else {
+                                        console.warn("Entry was edited prior to id being available.")
+                                    }
                                 }}
                                 style={{flex: 1}}
 
@@ -114,7 +119,7 @@ export default function EntryEditor() {
                         </Animated.View>
                     </SafeAreaView>
 
-                </>)}
+                </>}
         </View>
     )
 }
