@@ -20,15 +20,9 @@ export default function Login() {
         setStatusShown(true);
     }
 
-    function hideStatus() {
-        setStatusShown(false);
-        setStatusText("");
-    }
-
-
     async function onLoginButtonPress() {
         if (username !== "" && password !== "") {
-            hideStatus();
+            showStatus("Loading")
             try {
                 const response = await login(username, password);
                 if (response.status !== 401) {
