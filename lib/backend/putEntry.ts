@@ -1,5 +1,4 @@
 import checkOnline from "@/lib/backend/checkOnline";
-import backendHost from "@/lib/backend/backendHost";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NotLoggedInError from "@/lib/errors/NotLoggedInError";
 
@@ -11,7 +10,7 @@ export default async function putEntry(entry_id: number, text: string) {
     api_key = JSON.parse(api_key)
 
 
-    const url = `${backendHost}/entries/${entry_id}?text=${text}&api_key=${api_key}`
+    const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/entries/${entry_id}?text=${text}&api_key=${api_key}`
     await checkOnline()
     const response = await fetch(url, {method: "PUT"})
     if (response.status === 403) {

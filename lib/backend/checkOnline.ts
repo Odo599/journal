@@ -1,10 +1,9 @@
 import CannotConnectError from "@/lib/errors/CannotConnectError";
-import backendHost from "@/lib/backend/backendHost";
 
 export default async function checkOnline() {
     try {
         await fetch(
-            `${backendHost}/health`,
+            `${process.env.EXPO_PUBLIC_BACKEND_URL}/health`,
             {method: "GET", mode: 'cors'}
         )
     } catch (error) {

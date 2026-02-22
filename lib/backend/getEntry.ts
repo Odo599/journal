@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import checkOnline from "@/lib/backend/checkOnline";
 import NotLoggedInError from "@/lib/errors/NotLoggedInError";
-import backendHost from "@/lib/backend/backendHost";
 
 export default async function getEntry(id: number) {
     let api_key = await AsyncStorage.getItem("api_key");
@@ -11,7 +10,7 @@ export default async function getEntry(id: number) {
     api_key = JSON.parse(api_key)
 
     await checkOnline()
-    const url = `${backendHost}/entries/${id}?api_key=${api_key}`
+    const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/entries/${id}?api_key=${api_key}`
     const response = await fetch(url)
     if (response.status === 403) {
         await AsyncStorage.removeItem("api_key")
