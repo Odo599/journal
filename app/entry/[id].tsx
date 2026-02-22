@@ -99,7 +99,7 @@ export default function EntryEditor() {
                                 initialContentHTML={entry?.body}
                                 onChange={(text) => {
                                     if (entry?.id !== undefined) {
-                                        void saveEntry(entry.id, text, entry.created, entry.author_id);
+                                        void saveEntry(entry.id, text, entry.created, entry.author_username);
                                     } else {
                                         console.warn("Entry was edited prior to id being available.")
                                     }
