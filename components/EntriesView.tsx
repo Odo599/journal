@@ -1,4 +1,4 @@
-import {FlatList, Text, View} from "react-native"
+import {FlatList, RefreshControl, Text, View} from "react-native"
 import {useCallback, useEffect, useState} from "react";
 import {useRouter} from "expo-router";
 
@@ -15,6 +15,7 @@ export default function EntriesView() {
     const [entries, setEntries] = useState<EntryType[]>([])
     const [statusText, setStatusText] = useState("")
     const [statusShown, setStatusShown] = useState(false)
+    const [isRefreshing, setIsRefreshing] = useState(false)
 
     function showStatus(text: string) {
         setStatusText(text)
@@ -41,6 +42,15 @@ export default function EntriesView() {
         }, [router]
     )
 
+    const onRefresh = useCallback(async () => {
+            console.log("refreshing home page")
+            setIsRefreshing(true)
+            await updateEntries()
+            console.log("refreshed home page")
+            setIsRefreshing(false)
+        }, [updateEntries]
+    )
+
     useEffect(() => {
         void updateEntries()
     }, [router, updateEntries])
@@ -53,6 +63,13 @@ export default function EntriesView() {
                 data={entries}
                 keyExtractor={(item) => item.id.toString()}
                 ListHeaderComponent={TopHeader}
+                refreshing={isRefreshing}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={isRefreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
                 renderItem={({item}) => (
                     <Entry
                         id={item.id}
