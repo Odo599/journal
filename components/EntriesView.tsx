@@ -1,5 +1,6 @@
-import {Text, View} from "react-native"
-import {useEffect, useState} from "react";
+import {FlatList, Text, View} from "react-native"
+import {useCallback, useEffect, useState} from "react";
+
 import getEntries from "@/lib/backend/getEntries";
 import NotLoggedInError from "@/lib/errors/NotLoggedInError";
 import {useRouter} from "expo-router";
@@ -19,8 +20,8 @@ export default function EntriesView() {
         setStatusShown(true)
     }
 
-    useEffect(() => {
-        (async () => {
+    const updateEntries = useCallback(
+        async () => {
             try {
                 const response = await getEntries()
                 const body = await response.json()
@@ -36,19 +37,28 @@ export default function EntriesView() {
                     router.navigate("/Login")
                 }
             }
-        })()
-    }, [router])
+        }, [router]
+    )
+
+    useEffect(() => {
+        void updateEntries()
+    }, [router, updateEntries])
 
     return (
-        <View>
+        <View style={{flex: 1}}>
             {statusShown && <Text>{statusText}</Text>}
-            {entries.map((entry) => (
-                <Entry
-                    body={entry.body}
-                    created={entry.created}
-                    id={entry.id}
-                    key={entry.id}/>
-            ))}
+
+            <FlatList
+                data={entries}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({item}) => (
+                    <Entry
+                        id={item.id}
+                        body={item.body}
+                        created={item.created}
+                    />
+                )}
+            />
         </View>
     );
 }
