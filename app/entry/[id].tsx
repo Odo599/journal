@@ -1,6 +1,6 @@
-import {useLocalSearchParams, useRouter} from "expo-router";
-import {View, Text, Pressable, Animated} from "react-native";
-import {useEffect, useRef, useState} from "react";
+import {useLocalSearchParams, useNavigation, useRouter} from "expo-router";
+import {Animated, Pressable, Text, View} from "react-native";
+import {useCallback, useEffect, useRef, useState} from "react";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import {RichEditor, RichToolbar} from "react-native-pell-rich-editor";
 import {useKeyboardAnimation} from "react-native-keyboard-controller";
@@ -14,16 +14,19 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import saveEntry from "@/lib/database/saveEntry";
 import getRecentEntry from "@/lib/database/getRecentEntry";
 import NoAvailableEntryError from "@/lib/errors/NoAvailableEntryError";
+import putEntry from "@/lib/backend/putEntry";
 
 
 export default function EntryEditor() {
     const local = useLocalSearchParams();
     const router = useRouter()
+    const navigation = useNavigation()
 
     const [loaded, setLoaded] = useState(false);
     const [entry, setEntry] = useState<EntryType>();
     const [errorText, setErrorText] = useState("");
     const [errorShown, setErrorShown] = useState(false);
+    const [currentContent, setCurrentContent] = useState("");
 
     const editorRef = useRef<RichEditor>(null);
 
@@ -34,13 +37,13 @@ export default function EntryEditor() {
         setErrorShown(true);
     }
 
-    function goBack() {
+    const goBack = useCallback(() => {
         if (router.canGoBack()) {
             router.back()
         } else {
             router.navigate("/")
         }
-    }
+    }, [router])
 
     useEffect(() => {
         (async () => {
@@ -71,6 +74,12 @@ export default function EntryEditor() {
         })()
     }, [local.id, router])
 
+    useEffect(() => {
+        return navigation.addListener('beforeRemove', () => {
+            void putEntry(Number(local.id), currentContent)
+        })
+    }, [currentContent, local.id, navigation]);
+
     return (
         <View style={{flex: 1}}>
             {errorShown &&
@@ -99,6 +108,7 @@ export default function EntryEditor() {
                                 initialContentHTML={entry?.body}
                                 onChange={(text) => {
                                     if (entry?.id !== undefined) {
+                                        setCurrentContent(text)
                                         void saveEntry(entry.id, text, entry.created, entry.author_username);
                                     } else {
                                         console.warn("Entry was edited prior to id being available.")
