@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import getEntry from "@/lib/backend/getEntry";
-import NoAvailableEntryError from "@/lib/errors/NoAvailableEntryError";
 import {EntryType, isEntry} from "@/types/EntryType";
 import putEntry from "@/lib/backend/putEntry";
+import resolveEntryTimes from "@/lib/database/resolveEntryTimes";
 
 
 export default async function getRecentEntry(entry_id: number): Promise<EntryType> {
@@ -31,46 +31,31 @@ export default async function getRecentEntry(entry_id: number): Promise<EntryTyp
         storageEntry = null
     }
 
-    console.log(backendEntry, storageEntry)
+    console.log(
+        "backendEntry", backendEntry,
+        "storageEntry", storageEntry
+    )
 
-    if (!isEntry(backendEntry) && !isEntry(storageEntry)) {
-        console.warn("tried to access a nondefined entry")
-        throw new NoAvailableEntryError(undefined)
-    } else if (!isEntry(storageEntry) || storageEntry?.last_edited === null) {
-        return backendEntry
-    } else if ((!isEntry(backendEntry) || backendEntry?.last_edited === null) && storageEntry !== null) {
-        void (async () => {
+    return (resolveEntryTimes(
+        backendEntry,
+        storageEntry,
+        undefined,   // onNoEntry
+        undefined,  // onNoEntry1
+        () => {                // onNoEntry2
             console.log("updating server entry")
             try {
+                console.log("updating server entry with storage", storageEntry)
+                // @ts-ignore
                 void putEntry(entry_id, storageEntry.body)
             } catch (e) {
                 console.error("couldn't update server entry", e)
             }
-        })()
-        return storageEntry
-    } else if (storageEntry !== null && backendEntry !== null) {
-        const storageEntryLastEdited = storageEntry.last_edited
-        const backendEntryLastEdited = backendEntry.last_edited
-
-        console.log("storage entry:", storageEntryLastEdited, "backend entry:", backendEntryLastEdited)
-
-        if (storageEntryLastEdited > backendEntryLastEdited) {
-            void (async () => {
-                console.log("updating server entry")
-                try {
-                    void putEntry(entry_id, storageEntry.body)
-                } catch (e) {
-                    console.error("couldn't update server entry", e)
-                }
-            })()
-            console.log("returning storage")
-            return storageEntry
-        } else {
-            console.log("returning backend")
-            return backendEntry
+        },
+        () => {              // onEntry1
+            console.log("using backend entry")
+        },
+        () => {
+            console.log("using database entry")
         }
-    } else {
-        console.warn("tried to access a nondefined entry")
-        throw new NoAvailableEntryError(undefined)
-    }
+    ) ?? backendEntry) as EntryType
 }
