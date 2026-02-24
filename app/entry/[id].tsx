@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 import {useLocalSearchParams, useNavigation, useRouter} from "expo-router";
 import {Animated, Pressable, Text, View} from "react-native";
 import {useCallback, useEffect, useRef, useState} from "react";

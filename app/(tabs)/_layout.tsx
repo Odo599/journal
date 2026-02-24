@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 import {Tabs} from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Feather from '@expo/vector-icons/Feather';
