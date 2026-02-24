@@ -59,6 +59,7 @@ export default function EntryEditor() {
                     const entry = await getRecentEntry(Number(local.id))
                     if (isEntry(entry)) {
                         setEntry(entry)
+                        setCurrentContent(entry.body)
                         setLoaded(true)
                     }
                 } catch (error) {
@@ -78,9 +79,18 @@ export default function EntryEditor() {
 
     useEffect(() => {
         return navigation.addListener('beforeRemove', () => {
-            void putEntry(Number(local.id), currentContent)
+            if (entry !== undefined) {
+                console.log("saving entry");
+                (async () => {
+                    console.log("currentContent:", currentContent)
+                    await saveEntry(Number(local.id), currentContent, entry.created, entry.author_username)
+                    const recentEntry = await getRecentEntry(Number(local.id))
+                    console.log("recentEntry", recentEntry)
+                    void putEntry(recentEntry.id, recentEntry.body)
+                })()
+            }
         })
-    }, [currentContent, local.id, navigation]);
+    }, [currentContent, entry, local.id, navigation]);
 
     return (
         <View style={{flex: 1}}>
@@ -109,8 +119,8 @@ export default function EntryEditor() {
                                 ref={editorRef}
                                 initialContentHTML={entry?.body}
                                 onChange={(text) => {
+                                    setCurrentContent(text)
                                     if (entry?.id !== undefined) {
-                                        setCurrentContent(text)
                                         void saveEntry(entry.id, text, entry.created, entry.author_username);
                                     } else {
                                         console.warn("Entry was edited prior to id being available.")

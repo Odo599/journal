@@ -1,6 +1,6 @@
 import {FlatList, RefreshControl, Text, View} from "react-native"
 import {useCallback, useEffect, useState} from "react";
-import {useRouter} from "expo-router";
+import {useFocusEffect, useRouter} from "expo-router";
 
 import getEntries from "@/lib/backend/getEntries";
 import NotLoggedInError from "@/lib/errors/NotLoggedInError";
@@ -54,6 +54,12 @@ export default function EntriesView() {
     useEffect(() => {
         void updateEntries()
     }, [router, updateEntries])
+
+    useFocusEffect(
+        useCallback(() => {
+            void onRefresh();
+        }, [onRefresh])
+    );
 
     return (
         <View>
