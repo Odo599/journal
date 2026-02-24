@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import getEntry from "@/lib/backend/getEntry";
 import {EntryType, isEntry} from "@/types/EntryType";
 import putEntry from "@/lib/backend/putEntry";
-import resolveEntryTimes from "@/lib/database/resolveEntryTimes";
+import resolveEntryTimes from "@/lib/resolveEntryTimes";
 
 
 export default async function getRecentEntry(entry_id: number): Promise<EntryType> {
