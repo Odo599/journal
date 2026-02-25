@@ -10,8 +10,11 @@ export default async function getEntry(id: number) {
     api_key = JSON.parse(api_key)
 
     await checkOnline()
-    const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/entries/${id}?api_key=${api_key}`
-    const response = await fetch(url)
+    const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/entries/${id}`
+    const response = await fetch(
+        url,
+        {headers: new Headers([["X-API-Key", api_key ?? ""]])}
+    )
     if (response.status === 403) {
         await AsyncStorage.removeItem("api_key")
         throw new NotLoggedInError("couldn't get entries, api key was not valid")

@@ -10,9 +10,14 @@ export default async function putEntry(entry_id: number, text: string) {
     api_key = JSON.parse(api_key)
 
 
-    const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/entries/${entry_id}?text=${text}&api_key=${api_key}`
+    const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/entries/${entry_id}?text=${text}`
     await checkOnline()
-    const response = await fetch(url, {method: "PUT"})
+    const response = await fetch(url,
+        {
+            method: "PUT",
+            headers: new Headers([["X-API-Key", api_key ?? ""]])
+        }
+    )
     if (response.status === 403) {
         await AsyncStorage.removeItem("api_key")
         throw new NotLoggedInError("couldn't get entries, api key was not valid")

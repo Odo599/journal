@@ -9,9 +9,14 @@ export default async function createEntry(text: string = "") {
     }
     api_key = JSON.parse(api_key)
 
-    const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/createEntry?text=${text}&api_key=${api_key}`
+    const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/createEntry?text=${text}`
     await checkOnline();
-    const response = await fetch(url, {method: "POST"})
+    const response = await fetch(
+        url,
+        {
+            method: "POST",
+            headers: new Headers([["X-API-Key", api_key ?? ""]])
+        })
     if (response.status === 403) {
         await AsyncStorage.removeItem("api_key")
         throw new NotLoggedInError("couldn't create entry, api key was not valid")
