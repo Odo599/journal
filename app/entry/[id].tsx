@@ -14,7 +14,7 @@ import {EntryType, isEntry} from "@/types/EntryType";
 import EntryEditorStyles from "@/styles/EntryEditorStyles";
 import {SafeAreaView} from "react-native-safe-area-context";
 import saveEntry from "@/lib/database/saveEntry";
-import getRecentEntry from "@/lib/database/getRecentEntry";
+import getEntry from "@/lib/database/getEntry";
 import NoAvailableEntryError from "@/lib/errors/NoAvailableEntryError";
 import putEntry from "@/lib/backend/putEntry";
 
@@ -56,7 +56,7 @@ export default function EntryEditor() {
                 }, 0)
             } else {
                 try {
-                    const entry = await getRecentEntry(Number(local.id))
+                    const entry = await getEntry(Number(local.id))
                     if (isEntry(entry)) {
                         setEntry(entry)
                         setCurrentContent(entry.body)
@@ -85,7 +85,7 @@ export default function EntryEditor() {
                     try {
                         console.log("currentContent:", currentContent)
                         await saveEntry(Number(local.id), currentContent, entry.created, entry.author_username)
-                        const recentEntry = await getRecentEntry(Number(local.id))
+                        const recentEntry = await getEntry(Number(local.id))
                         console.log("recentEntry", recentEntry)
                         await putEntry(recentEntry.id, recentEntry.body)
                     } catch (error) {
