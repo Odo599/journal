@@ -1,11 +1,15 @@
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi.security import APIKeyHeader
 from fastapi.middleware.cors import CORSMiddleware
 from . import database
 from . import errors
 
 app = FastAPI()
+
+API_KEY_NAME = "X-API-Key"
+api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=True)
 
 origins = [
     "http://127.0.0.1:8081",
@@ -40,12 +44,18 @@ def get_api_key(username: Optional[str], password: Optional[str]):
 
 
 @app.get("/verifyApiKey", status_code=200)
-def verify_api_key(api_key: str):
-    return database.verify_api_key(api_key)
+def verify_api_key(api_key: str = Depends(api_key_header)):
+    if database.verify_api_key(api_key):
+        return api_key
+    else:
+        raise HTTPException(
+            status_code=401,
+            detail="api key invalid"
+        )
 
 
 @app.post("/createEntry", status_code=201)
-def create_entry(api_key: str, text: str):
+def create_entry(text: str, api_key: str = Depends(api_key_header)):
     user = database.verify_api_key(api_key)
     if not user:
         raise HTTPException(status_code=403, detail="api key invalid")
@@ -53,7 +63,7 @@ def create_entry(api_key: str, text: str):
 
 
 @app.get("/entries/{entry_id}", status_code=200)
-def get_entry(api_key: str, entry_id: int):
+def get_entry(entry_id: int, api_key: str = Depends(api_key_header)):
     user = database.verify_api_key(api_key)
     if not user:
         raise HTTPException(status_code=403, detail="api key invalid")
@@ -61,7 +71,7 @@ def get_entry(api_key: str, entry_id: int):
 
 
 @app.put("/entries/{entry_id}")
-def put_entry(api_key: str, entry_id: int, text: str):
+def put_entry(entry_id: int, text: str, api_key: str = Depends(api_key_header)):
     user = database.verify_api_key(api_key)
     if not user:
         raise HTTPException(status_code=403, detail="api key invalid")
@@ -69,7 +79,7 @@ def put_entry(api_key: str, entry_id: int, text: str):
 
 
 @app.get("/getEntries", status_code=200)
-def get_entries(api_key: str):
+def get_entries(api_key: str = Depends(api_key_header)):
     user = database.verify_api_key(api_key)
     if not user:
         raise HTTPException(status_code=403, detail="api key invalid")
@@ -77,7 +87,7 @@ def get_entries(api_key: str):
 
 
 @app.delete("/entries/{entry_id}", status_code=204)
-def delete_entry(api_key: str, entry_id: int):
+def delete_entry(entry_id: int, api_key: str = Depends(api_key_header)):
     user = database.verify_api_key(api_key)
     if not user:
         raise HTTPException(status_code=403, detail="api key invalid")
