@@ -96,9 +96,14 @@ def get_uid(username: str) -> int:
 
 def create_entry(username: str, text: str):
     conn, cursor = connect()
-    cursor.execute("INSERT INTO entries (author_username, body) VALUES (?,?);", (username, text))
+    cursor.execute(
+        "INSERT INTO entries (author_username, body) VALUES (?, ?);",
+        (username, text))
+    cursor.execute("SELECT last_insert_rowid();")
     conn.commit()
+    rowid = cursor.fetchone()
     conn.close()
+    return rowid[0]
 
 
 def get_entry(username: str, entry_id: int) -> row_types.EntryRow:

@@ -49,7 +49,7 @@ def create_entry(api_key: str, text: str):
     user = database.verify_api_key(api_key)
     if not user:
         raise HTTPException(status_code=403, detail="api key invalid")
-    database.create_entry(user, text)
+    return database.create_entry(user, text)
 
 
 @app.get("/entries/{entry_id}", status_code=200)
