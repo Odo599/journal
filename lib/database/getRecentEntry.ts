@@ -42,13 +42,11 @@ export default async function getRecentEntry(entry_id: number): Promise<EntryTyp
         undefined,   // onNoEntry
         undefined,  // onNoEntry1
         () => {                // onNoEntry2
-            console.log("updating server entry")
-            try {
-                console.log("updating server entry with storage", storageEntry)
-                // @ts-ignore
-                void putEntry(entry_id, storageEntry.body)
-            } catch (e) {
-                console.error("couldn't update server entry", e)
+            console.log("updating server entry with storage", storageEntry)
+            if (isEntry(storageEntry)) {
+                void putEntry(entry_id, storageEntry.body).catch((e) => {
+                    console.error("couldn't update server entry", e)
+                })
             }
         },
         () => {              // onEntry1

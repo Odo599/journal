@@ -6,8 +6,7 @@ export default async function checkOnline() {
             `${process.env.EXPO_PUBLIC_BACKEND_URL}/health`,
             {method: "GET", mode: 'cors'}
         )
-    } catch (error) {
-        console.error("server not reachable", error)
+    } catch {
         throw new CannotConnectError("couldn't reach server")
     }
 }

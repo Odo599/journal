@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import checkOnline from "@/lib/backend/checkOnline";
 import NotLoggedInError from "@/lib/errors/NotLoggedInError";
 
-export default async function getEntries() {
+export default async function getServerEntries() {
     let api_key = await AsyncStorage.getItem("api_key");
     if (api_key === null) {
         throw new NotLoggedInError("couldn't get entries, database didn't have api key stored")

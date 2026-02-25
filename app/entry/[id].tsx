@@ -82,11 +82,15 @@ export default function EntryEditor() {
             if (entry !== undefined) {
                 console.log("saving entry");
                 (async () => {
-                    console.log("currentContent:", currentContent)
-                    await saveEntry(Number(local.id), currentContent, entry.created, entry.author_username)
-                    const recentEntry = await getRecentEntry(Number(local.id))
-                    console.log("recentEntry", recentEntry)
-                    void putEntry(recentEntry.id, recentEntry.body)
+                    try {
+                        console.log("currentContent:", currentContent)
+                        await saveEntry(Number(local.id), currentContent, entry.created, entry.author_username)
+                        const recentEntry = await getRecentEntry(Number(local.id))
+                        console.log("recentEntry", recentEntry)
+                        await putEntry(recentEntry.id, recentEntry.body)
+                    } catch (error) {
+                        console.error("error while saving entry before leaving editor", error)
+                    }
                 })()
             }
         })

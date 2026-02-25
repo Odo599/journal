@@ -2,11 +2,11 @@ import {FlatList, RefreshControl, Text, View} from "react-native"
 import {useCallback, useEffect, useState} from "react";
 import {useFocusEffect, useRouter} from "expo-router";
 
-import getEntries from "@/lib/backend/getEntries";
 import NotLoggedInError from "@/lib/errors/NotLoggedInError";
 import Entry from "@/components/Entry";
-import {EntryType, isEntry} from "@/types/EntryType";
+import {EntryType} from "@/types/EntryType";
 import TopHeader from "@/components/TopHeader";
+import getEntries from "@/lib/database/getEntries";
 
 
 export default function EntriesView() {
@@ -25,19 +25,17 @@ export default function EntriesView() {
     const updateEntries = useCallback(
         async () => {
             try {
-                const response = await getEntries()
-                const body = await response.json()
-                if (Array.isArray(body) && body.every(isEntry)) {
-                    setEntries(body)
-                } else {
-                    console.error("entries response was invalid", body)
-                    showStatus("Entries were malformed, please reload")
-                }
+                const entries = await getEntries()
+                setEntries(entries)
             } catch (error) {
                 if (error instanceof NotLoggedInError) {
                     console.error("can't display entries, redirecting to login");
                     router.navigate("/Login")
+                } else {
+                    console.log("error when updating entries ", error)
+                    showStatus("there was an error when loading the entries, please reload or connect to wifi")
                 }
+
             }
         }, [router]
     )
@@ -45,9 +43,14 @@ export default function EntriesView() {
     const onRefresh = useCallback(async () => {
             console.log("refreshing home page")
             setIsRefreshing(true)
-            await updateEntries()
-            console.log("refreshed home page")
-            setIsRefreshing(false)
+            try {
+                await updateEntries()
+                console.log("refreshed home page")
+            } catch (error) {
+                console.error("error while refreshing home page", error)
+            } finally {
+                setIsRefreshing(false)
+            }
         }, [updateEntries]
     )
 
@@ -66,7 +69,7 @@ export default function EntriesView() {
             {statusShown && <Text>{statusText}</Text>}
 
             <FlatList
-                data={entries}
+                data={entries.sort((a, b) => Date.parse(b.created) - Date.parse(a.created))}
                 keyExtractor={(item) => item.id.toString()}
                 ListHeaderComponent={TopHeader}
                 refreshing={isRefreshing}
