@@ -1,11 +1,12 @@
 import {Pressable, Text, Vibration, View} from "react-native";
 import {useRouter} from "expo-router";
-import React, {memo} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 
 
 import EntryStyles from "@/styles/EntryStyles";
 import Html from "@/components/Html";
 import {EntryType} from "@/types/EntryType";
+import {format} from "date-fns";
 
 type EntryProps = {
     entry: EntryType,
@@ -15,7 +16,14 @@ type EntryProps = {
 }
 
 function Entry({entry, setContextMenuVisible, setMenuPosition, setCurrentEntry}: EntryProps) {
+    const [timeText, setTimeText] = useState("")
+
     const router = useRouter()
+
+    useEffect(() => {
+        const created = new Date(Date.parse(entry.created))
+        setTimeText(format(created, "HH:mm"))
+    }, [entry.created]);
 
     return (
         <>
@@ -35,7 +43,7 @@ function Entry({entry, setContextMenuVisible, setMenuPosition, setCurrentEntry}:
             >
                 <View style={EntryStyles.view}>
                     <Html html={entry.body}/>
-                    <Text style={EntryStyles.timestamp}>created at {entry.created}</Text>
+                    <Text style={EntryStyles.timestamp}>{timeText}</Text>
                 </View>
             </Pressable>
         </>

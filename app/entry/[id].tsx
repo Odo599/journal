@@ -7,6 +7,8 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import {RichEditor, RichToolbar} from "react-native-pell-rich-editor";
 import {useKeyboardAnimation} from "react-native-keyboard-controller";
 import {SafeAreaView} from "react-native-safe-area-context";
+import {format} from "date-fns";
+
 
 import CannotConnectError from "@/lib/errors/CannotConnectError";
 import NotLoggedInError from "@/lib/errors/NotLoggedInError";
@@ -28,6 +30,7 @@ export default function EntryEditor() {
     const [entry, setEntry] = useState<EntryType>();
     const [errorText, setErrorText] = useState("");
     const [errorShown, setErrorShown] = useState(false);
+    const [dateText, setDateText] = useState("")
 
     const editorRef = useRef<RichEditor>(null);
 
@@ -94,6 +97,13 @@ export default function EntryEditor() {
         })
     }, [entry, getOffline, id, navigation]);
 
+    useEffect(() => {
+        if (entry?.created) {
+            const created = new Date(Date.parse(entry.created))
+            setDateText(format(created, "E, do 'of' MMMM, HH:mm"))
+        }
+    }, [entry?.created]);
+
     return (
         <View style={{flex: 1}}>
             {errorShown &&
@@ -113,7 +123,7 @@ export default function EntryEditor() {
                                     size={30} color="black"
                                     style={EntryEditorStyles.backIcon}/>
                             </Pressable>
-                            <Text style={EntryEditorStyles.title}>{entry?.created} {entry?.offline}</Text>
+                            <Text style={EntryEditorStyles.title}>{dateText}</Text>
                         </View>
                         <View style={EntryEditorStyles.editor}>
                             <RichEditor
