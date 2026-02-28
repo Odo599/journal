@@ -104,8 +104,13 @@ export default function EntriesView() {
                         text: "Delete",
                         closeOnPress: true,
                         onPress: () => {
-                            if (selectedEntry)
-                                void deleteEntry(selectedEntry)
+                            (async () => {
+                                if (selectedEntry) {
+                                    await deleteEntry(selectedEntry)
+                                    await updateEntries()
+                                }
+                            })()
+
                         },
                         destructive: true
                     }
