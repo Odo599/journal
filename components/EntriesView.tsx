@@ -7,6 +7,8 @@ import Entry from "@/components/Entry";
 import {EntryType} from "@/types/EntryType";
 import TopHeader from "@/components/TopHeader";
 import getEntries from "@/lib/database/getEntries";
+import ContextMenu from "@/components/ContextMenu";
+import deleteEntry from "@/lib/database/deleteEntry";
 
 
 export default function EntriesView() {
@@ -16,6 +18,9 @@ export default function EntriesView() {
     const [statusText, setStatusText] = useState("")
     const [statusShown, setStatusShown] = useState(false)
     const [isRefreshing, setIsRefreshing] = useState(false)
+    const [contextMenuVisible, setContextMenuVisible] = useState(false)
+    const [menuPosition, setMenuPosition] = useState({x: 0, y: 0})
+    const [selectedEntry, setSelectedEntry] = useState<EntryType>()
 
     function showStatus(text: string) {
         setStatusText(text)
@@ -65,29 +70,47 @@ export default function EntriesView() {
     );
 
     return (
-        <View>
-            {statusShown && <Text>{statusText}</Text>}
+        <>
+            <View>
+                {statusShown && <Text>{statusText}</Text>}
 
-            <FlatList
-                data={entries.sort((a, b) => Date.parse(b.created) - Date.parse(a.created))}
-                keyExtractor={(item) => item.id.toString() + item.offline}
-                ListHeaderComponent={TopHeader}
-                refreshing={isRefreshing}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={isRefreshing}
-                        onRefresh={onRefresh}
-                    />
-                }
-                renderItem={({item}) => (
-                    <Entry
-                        id={item.id}
-                        body={item.body}
-                        created={item.created}
-                        offline={item.offline}
-                    />
-                )}
+                <FlatList
+                    data={entries.sort((a, b) => Date.parse(b.created) - Date.parse(a.created))}
+                    keyExtractor={(item) => item.id.toString() + item.offline}
+                    ListHeaderComponent={TopHeader}
+                    refreshing={isRefreshing}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={isRefreshing}
+                            onRefresh={onRefresh}
+                        />
+                    }
+                    renderItem={({item}) => (
+                        <Entry
+                            entry={item}
+                            setContextMenuVisible={setContextMenuVisible}
+                            setMenuPosition={setMenuPosition}
+                            setCurrentEntry={setSelectedEntry}
+                        />
+                    )}
+                />
+            </View>
+            <ContextMenu
+                visible={contextMenuVisible}
+                setContextMenuVisible={setContextMenuVisible}
+                position={menuPosition}
+                items={[
+                    {
+                        text: "Delete",
+                        closeOnPress: true,
+                        onPress: () => {
+                            if (selectedEntry)
+                                void deleteEntry(selectedEntry)
+                        },
+                        destructive: true
+                    }
+                ]}
             />
-        </View>
+        </>
     );
 }
