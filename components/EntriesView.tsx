@@ -70,7 +70,7 @@ export default function EntriesView() {
 
             <FlatList
                 data={entries.sort((a, b) => Date.parse(b.created) - Date.parse(a.created))}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item) => item.id.toString() + item.offline}
                 ListHeaderComponent={TopHeader}
                 refreshing={isRefreshing}
                 refreshControl={
@@ -84,6 +84,7 @@ export default function EntriesView() {
                         id={item.id}
                         body={item.body}
                         created={item.created}
+                        offline={item.offline}
                     />
                 )}
             />

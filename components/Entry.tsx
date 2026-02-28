@@ -9,15 +9,16 @@ import Html from "@/components/Html";
 type EntryProps = {
     body: string,
     created: string,
-    id: number
+    id: number,
+    offline?: boolean
 }
 
-function Entry({body, created, id}: EntryProps) {
+function Entry({body, created, id, offline}: EntryProps) {
     const router = useRouter()
 
     return (
         <Pressable onPress={() => {
-            router.navigate(`/entry/${id}`)
+            router.navigate(`/entry/${id}${(offline && "?offlineEntry=true") || ""}`)
         }}>
             <View style={EntryStyles.view}>
                 <Html html={body}/>

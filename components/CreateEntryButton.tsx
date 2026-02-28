@@ -2,8 +2,8 @@ import {Pressable} from "react-native";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 import CreateEntryButtonStyles from "@/styles/CreateEntryButtonStyles";
-import createEntry from "@/lib/backend/createEntry";
 import {useRouter} from "expo-router";
+import createEntry from "@/lib/database/createEntry";
 
 
 export function CreateEntryButton() {
@@ -12,13 +12,16 @@ export function CreateEntryButton() {
     function onPress() {
         (async () => {
             try {
-                const response = await createEntry();
-                const entry_id_str = await response.text();
-                const entry_id = Number(entry_id_str);
-                if (!isNaN(entry_id)) {
-                    router.navigate(`/entry/${entry_id}`)
+                const entry = await createEntry()
+                console.log(entry)
+                if (!isNaN(entry.id)) {
+                    if (entry.offline) {
+                        router.navigate(`/entry/${entry.id}?offlineEntry=true`)
+                    } else {
+                        router.navigate(`/entry/${entry.id}`)
+                    }
                 } else {
-                    console.error("unknown entry id value", entry_id_str)
+                    console.error("unknown entry id value", entry.id)
                 }
             } catch (e) {
                 console.error("error when creating entry", e)

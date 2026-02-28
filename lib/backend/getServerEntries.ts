@@ -1,15 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import checkOnline from "@/lib/backend/checkOnline";
 import NotLoggedInError from "@/lib/errors/NotLoggedInError";
+import {EntryType, isEntry} from "@/types/EntryType";
 
-export default async function getServerEntries() {
+export default async function getServerEntries(): Promise<EntryType[]> {
     let api_key = await AsyncStorage.getItem("api_key");
     if (api_key === null) {
         throw new NotLoggedInError("couldn't get entries, database didn't have api key stored")
     }
     api_key = JSON.parse(api_key)
 
-    await checkOnline()
     const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/getEntries`
     const response = await fetch(
         url,
@@ -19,6 +18,26 @@ export default async function getServerEntries() {
         await AsyncStorage.removeItem("api_key")
         throw new NotLoggedInError("couldn't get entries, api key was not valid")
     }
-    return response
 
+    if (!response.ok) {
+        console.error("non 2XX code when getting entries from server", response.status, await response.text())
+        return []
+    }
+
+    const output = await response.json()
+    const entries: EntryType[] = []
+
+    if (Array.isArray(output)) {
+        for (let i = 0; i < output.length; i++) {
+            if (isEntry(output[i])) {
+                entries.push(output[i])
+            } else {
+                console.warn("malformed server entry", output[i])
+            }
+        }
+    } else {
+        console.warn("server did not return array", output)
+    }
+
+    return entries
 }

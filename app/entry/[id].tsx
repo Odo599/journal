@@ -1,26 +1,26 @@
 // noinspection JSUnusedGlobalSymbols
 
-import {useLocalSearchParams, useNavigation, useRouter} from "expo-router";
+import {useGlobalSearchParams, useNavigation, useRouter} from "expo-router";
 import {Animated, Pressable, Text, View} from "react-native";
 import {useCallback, useEffect, useRef, useState} from "react";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import {RichEditor, RichToolbar} from "react-native-pell-rich-editor";
 import {useKeyboardAnimation} from "react-native-keyboard-controller";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 import CannotConnectError from "@/lib/errors/CannotConnectError";
 import NotLoggedInError from "@/lib/errors/NotLoggedInError";
 import styles from "@/styles/styles"
 import {EntryType, isEntry} from "@/types/EntryType";
 import EntryEditorStyles from "@/styles/EntryEditorStyles";
-import {SafeAreaView} from "react-native-safe-area-context";
-import saveEntry from "@/lib/database/saveEntry";
 import getEntry from "@/lib/database/getEntry";
 import NoAvailableEntryError from "@/lib/errors/NoAvailableEntryError";
-import putEntry from "@/lib/backend/putEntry";
+import putEntry from "@/lib/database/putEntry";
+import saveLocalEntry from "@/lib/local/saveLocalEntry";
 
 
 export default function EntryEditor() {
-    const local = useLocalSearchParams();
+    const {offlineEntry, id} = useGlobalSearchParams<{ offlineEntry?: string, id: string }>();
     const router = useRouter()
     const navigation = useNavigation()
 
@@ -28,7 +28,6 @@ export default function EntryEditor() {
     const [entry, setEntry] = useState<EntryType>();
     const [errorText, setErrorText] = useState("");
     const [errorShown, setErrorShown] = useState(false);
-    const [currentContent, setCurrentContent] = useState("");
 
     const editorRef = useRef<RichEditor>(null);
 
@@ -38,6 +37,10 @@ export default function EntryEditor() {
         setErrorText(text);
         setErrorShown(true);
     }
+
+    const getOffline = useCallback(() => {
+        return offlineEntry === "true";
+    }, [offlineEntry])
 
     const goBack = useCallback(() => {
         if (router.canGoBack()) {
@@ -49,17 +52,16 @@ export default function EntryEditor() {
 
     useEffect(() => {
         (async () => {
-            if (Number.isNaN(Number(local.id))) {
-                console.error("tried to navigate to entry with non integer id:", local.id)
+            if (Number.isNaN(Number(id))) {
+                console.error("tried to navigate to entry with non integer id:", id)
                 setTimeout(() => {
                     router.replace("/")
                 }, 0)
             } else {
                 try {
-                    const entry = await getEntry(Number(local.id))
+                    const entry = await getEntry(Number(id), getOffline())
                     if (isEntry(entry)) {
                         setEntry(entry)
-                        setCurrentContent(entry.body)
                         setLoaded(true)
                     }
                 } catch (error) {
@@ -75,7 +77,7 @@ export default function EntryEditor() {
                 }
             }
         })()
-    }, [local.id, router])
+    }, [getOffline, id, router])
 
     useEffect(() => {
         return navigation.addListener('beforeRemove', () => {
@@ -83,18 +85,14 @@ export default function EntryEditor() {
                 console.log("saving entry");
                 (async () => {
                     try {
-                        console.log("currentContent:", currentContent)
-                        await saveEntry(Number(local.id), currentContent, entry.created, entry.author_username)
-                        const recentEntry = await getEntry(Number(local.id))
-                        console.log("recentEntry", recentEntry)
-                        await putEntry(recentEntry.id, recentEntry.body)
+                        await putEntry(entry)
                     } catch (error) {
                         console.error("error while saving entry before leaving editor", error)
                     }
                 })()
             }
         })
-    }, [currentContent, entry, local.id, navigation]);
+    }, [entry, getOffline, id, navigation]);
 
     return (
         <View style={{flex: 1}}>
@@ -107,7 +105,6 @@ export default function EntryEditor() {
             }
             {loaded &&
                 <>
-
                     <SafeAreaView style={EntryEditorStyles.editorView}>
                         <View style={EntryEditorStyles.header}>
                             <Pressable onPress={goBack}>
@@ -116,16 +113,16 @@ export default function EntryEditor() {
                                     size={30} color="black"
                                     style={EntryEditorStyles.backIcon}/>
                             </Pressable>
-                            <Text style={EntryEditorStyles.title}>{entry?.created}</Text>
+                            <Text style={EntryEditorStyles.title}>{entry?.created} {entry?.offline}</Text>
                         </View>
                         <View style={EntryEditorStyles.editor}>
                             <RichEditor
                                 ref={editorRef}
                                 initialContentHTML={entry?.body}
                                 onChange={(text) => {
-                                    setCurrentContent(text)
-                                    if (entry?.id !== undefined) {
-                                        void saveEntry(entry.id, text, entry.created, entry.author_username);
+                                    if (entry !== null && entry !== undefined) {
+                                        entry.body = text
+                                        void saveLocalEntry(entry);
                                     } else {
                                         console.warn("Entry was edited prior to id being available.")
                                     }

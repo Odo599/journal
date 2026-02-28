@@ -1,8 +1,8 @@
-import checkOnline from "@/lib/backend/checkOnline";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NotLoggedInError from "@/lib/errors/NotLoggedInError";
+import {EntryType} from "@/types/EntryType";
 
-export default async function putEntry(entry_id: number, text: string) {
+export default async function putServerEntry(e: EntryType): Promise<void> {
     let api_key = await AsyncStorage.getItem("api_key");
     if (api_key === null) {
         throw new NotLoggedInError("couldn't get entries, database didn't have api key stored")
@@ -10,17 +10,19 @@ export default async function putEntry(entry_id: number, text: string) {
     api_key = JSON.parse(api_key)
 
 
-    const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/entries/${entry_id}?text=${text}`
-    await checkOnline()
+    const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/entries/${e.id}`
     const response = await fetch(url,
         {
             method: "PUT",
-            headers: new Headers([["X-API-Key", api_key ?? ""]])
+            headers: new Headers([
+                ["X-API-Key", api_key ?? ""],
+                ["Content-Type", "application/json"]
+            ]),
+            body: JSON.stringify({"text": e.body})
         }
     )
     if (response.status === 403) {
         await AsyncStorage.removeItem("api_key")
         throw new NotLoggedInError("couldn't get entries, api key was not valid")
     }
-    return response
 }
