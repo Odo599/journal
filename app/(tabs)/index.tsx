@@ -5,7 +5,7 @@ import {CreateEntryButton} from "@/components/CreateEntryButton";
 
 export default function Index() {
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{flex:1}}>
             <EntriesView/>
             <CreateEntryButton/>
         </SafeAreaView>
