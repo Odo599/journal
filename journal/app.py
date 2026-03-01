@@ -1,8 +1,10 @@
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException, Depends, status
-from fastapi.security import APIKeyHeader
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import APIKeyHeader
+from pydantic import BaseModel
+
 from . import database
 from . import errors
 
@@ -10,6 +12,11 @@ app = FastAPI()
 
 API_KEY_NAME = "X-API-Key"
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=True)
+
+
+class EntryText(BaseModel):
+    text: str
+
 
 origins = [
     "http://127.0.0.1:8081",
@@ -71,11 +78,11 @@ def get_entry(entry_id: int, api_key: str = Depends(api_key_header)):
 
 
 @app.put("/entries/{entry_id}")
-def put_entry(entry_id: int, text: str, api_key: str = Depends(api_key_header)):
+def put_entry(entry_id: int, text: EntryText, api_key: str = Depends(api_key_header)):
     user = database.verify_api_key(api_key)
     if not user:
         raise HTTPException(status_code=403, detail="api key invalid")
-    return database.put_entry(user, entry_id, text)
+    return database.put_entry(user, entry_id, text.text)
 
 
 @app.get("/getEntries", status_code=200)

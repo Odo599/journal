@@ -6,9 +6,9 @@ from typing import Union
 from argon2 import PasswordHasher
 from fastapi import HTTPException
 
-from . import row_types
 from . import auth
 from . import errors
+from . import row_types
 
 database_file = "instance/data.db"
 sql_file = "journal/schema.sql"
@@ -155,10 +155,13 @@ def put_entry(username: str, entry_id: int, text: str):
     conn, cursor = connect()
     cursor.execute("SELECT * FROM entries WHERE id=? LIMIT 1", (entry_id,))
     entry = cursor.fetchone()
+    current_ms = time.time_ns() // 1_000_000
     if entry is None:
-        raise HTTPException(status_code=404, detail="entry not found")
+        cursor.execute("INSERT INTO entries (author_username, body, last_edited) VALUES (?,?,?)",
+                       (username, text, current_ms))
     elif entry[1] != username:
         raise HTTPException(status_code=404, detail="entry not found")
-    cursor.execute("UPDATE entries SET body=?, last_edited=? WHERE id=?", (text, time.time_ns() // 1_000_000, entry_id))
+    else:
+        cursor.execute("UPDATE entries SET body=?, last_edited=? WHERE id=?", (text, current_ms, entry_id))
     conn.commit()
     conn.close()
