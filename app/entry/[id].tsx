@@ -2,9 +2,9 @@
 
 import {useGlobalSearchParams, useNavigation, useRouter} from "expo-router";
 import {Animated, Pressable, Text, View} from "react-native";
-import {useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import {RichEditor, RichToolbar} from "react-native-pell-rich-editor";
+import {actions, RichEditor, RichToolbar} from "react-native-pell-rich-editor";
 import {useKeyboardAnimation} from "react-native-keyboard-controller";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {format} from "date-fns";
@@ -19,6 +19,8 @@ import getEntry from "@/lib/database/getEntry";
 import NoAvailableEntryError from "@/lib/errors/NoAvailableEntryError";
 import putEntry from "@/lib/database/putEntry";
 import saveLocalEntry from "@/lib/local/saveLocalEntry";
+import ContextMenu from "@/components/ContextMenu";
+import deleteEntry from "@/lib/database/deleteEntry";
 
 
 export default function EntryEditor() {
@@ -31,8 +33,11 @@ export default function EntryEditor() {
     const [errorText, setErrorText] = useState("");
     const [errorShown, setErrorShown] = useState(false);
     const [dateText, setDateText] = useState("")
+    const [menuVisible, setMenuVisible] = useState(false)
+    const [menuPosition, setMenuPosition] = useState({x: 0, y: 0})
 
     const editorRef = useRef<RichEditor>(null);
+    const richToolbarContainerRef = useRef<View>(null)
 
     const {height} = useKeyboardAnimation()
 
@@ -52,6 +57,17 @@ export default function EntryEditor() {
             router.navigate("/")
         }
     }, [router])
+
+    const showMenu = useCallback(() => {
+        if (richToolbarContainerRef.current !== null) {
+            richToolbarContainerRef.current.measure((_x, _y, _width, _height, _pageX, pageY) => {
+                setMenuPosition({x: 0, y: pageY - 10})
+                setMenuVisible(true)
+
+            })
+        }
+
+    }, [])
 
     useEffect(() => {
         (async () => {
@@ -138,7 +154,6 @@ export default function EntryEditor() {
                                     }
                                 }}
                                 style={{flex: 1}}
-
                             />
                         </View>
                         <Animated.View
@@ -146,13 +161,56 @@ export default function EntryEditor() {
                                 transform: [{translateY: height}],
                             }}
                         >
-                            <RichToolbar
-                                editor={editorRef}
-                            />
+                            <View ref={richToolbarContainerRef}>
+                                <RichToolbar
+                                    editor={editorRef}
+                                    actions={[
+                                        "menu",
+                                        actions.undo,
+                                        actions.redo,
+                                        actions.setBold,
+                                        actions.setItalic,
+                                        actions.setStrikethrough,
+                                        actions.setUnderline,
+                                        actions.insertBulletsList,
+                                        actions.insertOrderedList,
+                                        actions.checkboxList,
+                                        actions.removeFormat,
+                                        actions.code,
+                                    ]}
+                                    iconMap={{
+                                        "menu": () => <MaterialIcons name="menu" size={24} color={"gray"}/>
+                                    }}
+                                    menu={showMenu}
+                                />
+                            </View>
                         </Animated.View>
                     </SafeAreaView>
 
                 </>}
+            <ContextMenu
+                visible={menuVisible}
+                setContextMenuVisible={setMenuVisible}
+                position={menuPosition}
+                anchor={{
+                    horizontal: "left",
+                    vertical: "bottom"
+                }}
+                items={[{
+                    text: "Delete",
+                    closeOnPress: true,
+                    onPress: () => {
+                        (async () => {
+                            if (entry) {
+                                await deleteEntry(entry)
+                                router.navigate("/")
+                            }
+                        })()
+
+                    },
+                    destructive: true
+                }]}
+            />
         </View>
     )
 }
