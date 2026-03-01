@@ -99,6 +99,10 @@ export default function EntriesView() {
                 visible={contextMenuVisible}
                 setContextMenuVisible={setContextMenuVisible}
                 position={menuPosition}
+                anchor={{
+                    horizontal: "left",
+                    vertical: "top"
+                }}
                 items={[
                     {
                         text: "Delete",
