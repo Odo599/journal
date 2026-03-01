@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="DataSourcePerFileMappings">
-    <file url="file://$PROJECT_DIR$/journal/database.py" value="149f034d-fba4-4469-b9a6-80f830786f17" />
-    <file url="file://$PROJECT_DIR$/journal/schema.sql" value="149f034d-fba4-4469-b9a6-80f830786f17" />
-  </component>
-</project>
