@@ -14,8 +14,9 @@ API_KEY_NAME = "X-API-Key"
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=True)
 
 
-class EntryText(BaseModel):
+class Entry(BaseModel):
     text: str
+    created: str
 
 
 origins = [
@@ -62,11 +63,11 @@ def verify_api_key(api_key: str = Depends(api_key_header)):
 
 
 @app.post("/createEntry", status_code=201)
-def create_entry(text: str, api_key: str = Depends(api_key_header)):
+def create_entry(entry: Entry, api_key: str = Depends(api_key_header)):
     user = database.verify_api_key(api_key)
     if not user:
         raise HTTPException(status_code=403, detail="api key invalid")
-    return database.create_entry(user, text)
+    return database.create_entry(user, entry.text, entry.created)
 
 
 @app.get("/entries/{entry_id}", status_code=200)
@@ -78,11 +79,11 @@ def get_entry(entry_id: int, api_key: str = Depends(api_key_header)):
 
 
 @app.put("/entries/{entry_id}")
-def put_entry(entry_id: int, text: EntryText, api_key: str = Depends(api_key_header)):
+def put_entry(entry_id: int, entry: Entry, api_key: str = Depends(api_key_header)):
     user = database.verify_api_key(api_key)
     if not user:
         raise HTTPException(status_code=403, detail="api key invalid")
-    return database.put_entry(user, entry_id, text.text)
+    return database.put_entry(user, entry_id, entry.text)
 
 
 @app.get("/getEntries", status_code=200)

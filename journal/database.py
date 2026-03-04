@@ -1,7 +1,7 @@
 import secrets
 import sqlite3
 import time
-from typing import Union
+from typing import Union, Optional
 
 from argon2 import PasswordHasher
 from fastapi import HTTPException
@@ -94,11 +94,16 @@ def get_uid(username: str) -> int:
     return row[0]
 
 
-def create_entry(username: str, text: str):
+def create_entry(username: str, text: str, created: Optional[str] = None):
     conn, cursor = connect()
-    cursor.execute(
-        "INSERT INTO entries (author_username, body) VALUES (?, ?);",
-        (username, text))
+    if created is None:
+        cursor.execute(
+            "INSERT INTO entries (author_username, body) VALUES (?, ?);",
+            (username, text))
+    else:
+        cursor.execute(
+            "INSERT INTO entries (author_username, body, created) VALUES (?, ?, ?);",
+            (username, text, created))
     cursor.execute("SELECT last_insert_rowid();")
     conn.commit()
     rowid = cursor.fetchone()
