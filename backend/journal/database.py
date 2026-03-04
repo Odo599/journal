@@ -14,18 +14,17 @@ database_file = "instance/data.db"
 sql_file = "journal/schema.sql"
 
 
-def connect():
-    conn = sqlite3.connect(database_file)
+def connect(dbpath: str = database_file):
+    conn = sqlite3.connect(dbpath)
     cursor = conn.cursor()
-
     return conn, cursor
 
 
-def init_db():
+def init_db(path: str = sql_file):
     conn = None
     try:
         conn, cursor = connect()
-        with open(sql_file, "r") as f:
+        with open(path, "r") as f:
             sql_script = f.read()
         cursor.executescript(sql_script)
         conn.commit()
