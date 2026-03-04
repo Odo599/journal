@@ -8,7 +8,7 @@ export default async function putEntry(e: EntryType) {
     if (e.offline) {
         console.log("updating offline entry")
         try {
-            const server_entry = await createServerEntry(e.body)
+            const server_entry = await createServerEntry(e.body, e.created)
             if (server_entry !== null) {
                 await AsyncStorage.removeItem(`offline_entry_${e.id}`)
                 e = server_entry

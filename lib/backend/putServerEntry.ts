@@ -18,7 +18,10 @@ export default async function putServerEntry(e: EntryType): Promise<void> {
                 ["X-API-Key", api_key ?? ""],
                 ["Content-Type", "application/json"]
             ]),
-            body: JSON.stringify({"text": e.body})
+            body: JSON.stringify({
+                "text": e.body,
+                "created": e.created
+            })
         }
     )
     if (response.status === 403) {
