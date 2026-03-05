@@ -3,21 +3,15 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import APIKeyHeader
-from pydantic import BaseModel
 
 from . import database
 from . import errors
+from .types import CreateEntry, PutEntry
 
 app = FastAPI()
 
 API_KEY_NAME = "X-API-Key"
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=True)
-
-
-class Entry(BaseModel):
-    text: str
-    created: str
-
 
 origins = [
     "http://127.0.0.1:8081",
@@ -63,7 +57,7 @@ def verify_api_key(api_key: str = Depends(api_key_header)):
 
 
 @app.post("/createEntry", status_code=201)
-def create_entry(entry: Entry, api_key: str = Depends(api_key_header)):
+def create_entry(entry: CreateEntry, api_key: str = Depends(api_key_header)):
     user = database.verify_api_key(api_key)
     if not user:
         raise HTTPException(status_code=403, detail="api key invalid")
@@ -79,11 +73,11 @@ def get_entry(entry_id: int, api_key: str = Depends(api_key_header)):
 
 
 @app.put("/entries/{entry_id}")
-def put_entry(entry_id: int, entry: Entry, api_key: str = Depends(api_key_header)):
+def put_entry(entry_id: int, entry: PutEntry, api_key: str = Depends(api_key_header)):
     user = database.verify_api_key(api_key)
     if not user:
         raise HTTPException(status_code=403, detail="api key invalid")
-    return database.put_entry(user, entry_id, entry.text)
+    return database.put_entry(user, entry)
 
 
 @app.get("/getEntries", status_code=200)

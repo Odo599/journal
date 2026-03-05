@@ -20,7 +20,8 @@ export default async function putServerEntry(e: EntryType): Promise<void> {
             ]),
             body: JSON.stringify({
                 "text": e.body,
-                "created": e.created
+                "created": e.created,
+                "id": e.id
             })
         }
     )

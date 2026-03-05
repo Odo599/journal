@@ -9,6 +9,7 @@ from fastapi import HTTPException
 from . import auth
 from . import errors
 from . import row_types
+from .types import CreateEntry, PutEntry
 
 database_file = "instance/data.db"
 sql_file = "journal/schema.sql"
@@ -155,17 +156,18 @@ def get_entries(username):
     return entries
 
 
-def put_entry(username: str, entry_id: int, text: str):
+def put_entry(username: str, entry: PutEntry):
     conn, cursor = connect()
-    cursor.execute("SELECT * FROM entries WHERE id=? LIMIT 1", (entry_id,))
-    entry = cursor.fetchone()
+    cursor.execute("SELECT * FROM entries WHERE id=? LIMIT 1", (entry.id,))
+    e = cursor.fetchone()
     current_ms = time.time_ns() // 1_000_000
-    if entry is None:
-        cursor.execute("INSERT INTO entries (author_username, body, last_edited) VALUES (?,?,?)",
-                       (username, text, current_ms))
-    elif entry[1] != username:
+    if e is None:
+        cursor.execute("INSERT INTO entries (author_username, body, last_edited, created) VALUES (?,?,?,?)",
+                       (username, entry.text, current_ms,entry.created))
+    elif e[1] != username:
         raise HTTPException(status_code=404, detail="entry not found")
     else:
-        cursor.execute("UPDATE entries SET body=?, last_edited=? WHERE id=?", (text, current_ms, entry_id))
+        cursor.execute("UPDATE entries SET body=?, last_edited=?, created=? WHERE id=?",
+                       (entry.text, current_ms,entry.created, entry.id))
     conn.commit()
     conn.close()
