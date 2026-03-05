@@ -35,7 +35,7 @@ export default function EntriesView() {
             } catch (error) {
                 if (error instanceof NotLoggedInError) {
                     console.error("can't display entries, redirecting to login");
-                    router.navigate("/Login")
+                    router.navigate("/Welcome")
                 } else {
                     console.log("error when updating entries ", error)
                     showStatus("there was an error when loading the entries, please reload or connect to wifi")

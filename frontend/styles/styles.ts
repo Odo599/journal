@@ -23,6 +23,29 @@ const styles = StyleSheet.create({
         marginTop: 10,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    bigHeaderText: {
+        fontSize: 60,
+        textAlign: "center",
+        margin: 10,
+        fontFamily: "SourceSansPro_700Bold",
+    },
+    mediumHeaderText: {
+        fontSize: 50,
+        textAlign: "center",
+        margin: 10,
+        fontFamily: "SourceSansPro_700Bold",
+    },
+    subtext: {
+        textAlign: "center",
+        fontSize: 15,
+        marginBottom: 10
+    },
+    mainViewPadding: {
+        padding: 20
+    },
+    linkText: {
+        color: "#1a73e8"
     }
 })
 export default styles;

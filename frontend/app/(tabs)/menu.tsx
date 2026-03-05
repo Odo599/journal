@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 import FullWidthLink from "@/components/FullWidthLink";
 import {useRouter} from 'expo-router';
 import {ScrollView} from "react-native";
