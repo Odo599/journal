@@ -1,29 +1,37 @@
 import {StyleSheet} from "react-native";
+import {MD3Theme} from "react-native-paper";
 
-const EntryEditorStyles = StyleSheet.create({
-    editorView: {
-        flex: 1,
-        flexDirection: "column"
-    },
+const getEntryEditorStyles = (theme: MD3Theme) => {
+    return StyleSheet.create({
+        editorView: {
+            flex: 1,
+            flexDirection: "column",
+            backgroundColor: theme.colors.background
+        },
+        header: {
+            flexDirection: "row",
+            alignItems: "center",
+            padding: 10
+        },
+        backIcon: {
+            marginRight: 15
+        },
 
-    header: {
-        flexDirection: "row",
-        alignItems: "center",
-        padding: 10
-    },
+        title: {
+            fontSize: 20
+        },
 
-    backIcon: {
-        marginRight: 15
-    },
+        editor: {
+            flex: 1
+        },
+        editorStyle: {
+            backgroundColor: theme.colors.background,
+            color: theme.colors.onBackground
+        },
+        toolbar: {
+            backgroundColor: theme.colors.background
+        }
+    });
+}
 
-    title: {
-        fontSize: 20
-    },
-
-    editor: {
-        flex: 1
-    },
-
-});
-
-export default EntryEditorStyles;
+export default getEntryEditorStyles;

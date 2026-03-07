@@ -1,13 +1,14 @@
-import {Pressable} from "react-native";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-
-import CreateEntryButtonStyles from "@/styles/CreateEntryButtonStyles";
+import getCreateEntryButtonStyles from "@/styles/CreateEntryButtonStyles";
 import {useRouter} from "expo-router";
 import createEntry from "@/lib/database/createEntry";
+import {useTheme, IconButton} from "react-native-paper";
 
 
 export function CreateEntryButton() {
     const router = useRouter()
+    const theme = useTheme()
+    const CreateEntryButtonStyles = getCreateEntryButtonStyles()
 
     function onPress() {
         (async () => {
@@ -29,11 +30,15 @@ export function CreateEntryButton() {
     }
 
     return (
-        <Pressable
+        <IconButton
             style={CreateEntryButtonStyles.container}
             onPress={onPress}
-        >
-            <MaterialIcons name="add" size={30} color="white"/>
-        </Pressable>
+            icon={() => {
+                return <MaterialIcons name="add" size={30}/>
+            }}
+            size={70}
+            containerColor={theme.colors.primary}
+            rippleColor={`${theme.colors.onPrimary}1F`}
+        />
     );
 }

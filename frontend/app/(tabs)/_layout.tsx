@@ -3,18 +3,27 @@
 import {Tabs} from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Feather from '@expo/vector-icons/Feather';
+import {useTheme} from "react-native-paper";
 
 
 export default function TabLayout() {
+    const theme = useTheme()
+
     return (
-        <Tabs>
+        <Tabs
+            screenOptions={{
+                tabBarStyle: {backgroundColor: theme.colors.background},
+                tabBarActiveTintColor: theme.colors.primary,
+                tabBarInactiveTintColor: theme.colors.onSurfaceVariant,
+                headerShown: false
+            }}
+        >
             <Tabs.Screen
                 name={"index"}
                 options={{
                     title: "Home",
-                    headerShown: false,
                     tabBarIcon: ({color}) =>
-                        <Feather name="book-open" size={24} color={color} />
+                        <Feather name="book-open" size={24} color={color}/>
                 }}/>
             <Tabs.Screen
                 name={"menu"}

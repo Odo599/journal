@@ -1,4 +1,4 @@
-import {Text} from "react-native"
+import {Text} from "react-native-paper"
 import {useMemo} from "react";
 import parseHtml from "@/lib/parseHtml";
 

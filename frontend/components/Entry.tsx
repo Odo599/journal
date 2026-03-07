@@ -1,12 +1,11 @@
-import {Pressable, Text, Vibration, View} from "react-native";
+import {Pressable, Vibration, View} from "react-native";
 import {useRouter} from "expo-router";
-import React, {memo, useEffect, useState} from 'react';
-
-
-import EntryStyles from "@/styles/EntryStyles";
+import React, {memo, useEffect, useMemo, useState} from 'react';
+import getEntryStyles from "@/styles/EntryStyles";
 import Html from "@/components/Html";
 import {EntryType} from "@/types/EntryType";
 import {format} from "date-fns";
+import {useTheme, Text} from "react-native-paper";
 
 type EntryProps = {
     entry: EntryType,
@@ -16,9 +15,11 @@ type EntryProps = {
 }
 
 function Entry({entry, setContextMenuVisible, setMenuPosition, setCurrentEntry}: EntryProps) {
-    const [timeText, setTimeText] = useState("")
-
     const router = useRouter()
+    const theme = useTheme()
+    const EntryStyles = useMemo(() => getEntryStyles(theme), [theme])
+
+    const [timeText, setTimeText] = useState("")
 
     useEffect(() => {
         const created = new Date(Date.parse(entry.created))

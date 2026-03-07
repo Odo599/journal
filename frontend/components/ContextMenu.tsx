@@ -1,7 +1,8 @@
-import {GestureResponderEvent, Modal, Pressable, View, Text, Vibration} from "react-native";
+import {GestureResponderEvent, Modal, Pressable, View, Vibration} from "react-native";
 import uuid from 'react-native-uuid';
-import ContextMenuStyles from "@/styles/ContextMenuStyles";
-import React, {useLayoutEffect, useRef, useState} from "react";
+import getContextMenuStyles from "@/styles/ContextMenuStyles";
+import React, {useLayoutEffect, useMemo, useRef, useState} from "react";
+import {useTheme, Text} from "react-native-paper";
 
 type ContextMenuProps = {
     visible: boolean,
@@ -38,6 +39,9 @@ function ContextMenuItemComponent({
                                       setContextMenuVisible,
                                       destructive
                                   }: ContextMenuItemProps) {
+    const theme = useTheme()
+    const ContextMenuStyles = useMemo(() => getContextMenuStyles(theme), [theme])
+
     return (
         <Pressable
             onPress={(e) => {
@@ -53,10 +57,9 @@ function ContextMenuItemComponent({
                     ContextMenuStyles.itemNotLast]}
         >
             <Text
-                style={[
-                    ContextMenuStyles.itemText,
+                style={
                     destructive ? ContextMenuStyles.itemTextDestructive : {}
-                ]}
+                }
             >
                 {text}
             </Text>
@@ -71,6 +74,8 @@ export default function ContextMenu({
                                         items,
                                         anchor,
                                     }: ContextMenuProps) {
+    const theme = useTheme()
+    const ContextMenuStyles = useMemo(() => getContextMenuStyles(theme), [theme])
     const [xPos, setXPos] = useState(0);
     const [yPos, setYPos] = useState(0);
 

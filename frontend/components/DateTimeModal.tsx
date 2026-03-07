@@ -1,11 +1,11 @@
-import {Modal, Pressable, Text, View} from "react-native";
+import {Modal, Pressable, View} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {DateTimePickerAndroid, DateTimePickerEvent} from "@react-native-community/datetimepicker";
 import {format} from "date-fns";
-
-import styles from "@/styles/styles";
-import DateTimeModalStyles from "@/styles/DateTimeModalStyles";
+import {useTheme, Text} from "react-native-paper";
+import getStyles from "@/styles/styles";
+import getDateTimeModalStyles from "@/styles/DateTimeModalStyles";
 import ButtonNoBackground from "@/components/ButtonNoBackground";
 
 type DateTimeModalProps = {
@@ -16,6 +16,10 @@ type DateTimeModalProps = {
 }
 
 export function DateTimeModal({initialTime, onChange, onClosePress, visible}: DateTimeModalProps) {
+    const theme = useTheme()
+    const styles = useMemo(() => getStyles(theme), [theme])
+    const DateTimeModalStyles = useMemo(() => getDateTimeModalStyles(theme), [theme])
+
     const [date, setDate] = useState(initialTime);
     const [dateText, setDateText] = useState("")
     const [timeText, setTimeText] = useState("")

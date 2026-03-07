@@ -1,9 +1,7 @@
 // noinspection JSUnusedGlobalSymbols
 
-import {Text, View} from "react-native";
-import React from 'react';
-import styles from "@/styles/styles";
-import createUserStyles from "@/styles/CreateUserStyles";
+import {View} from "react-native";
+import React, {useMemo} from 'react';
 import createUser from "@/lib/backend/createUser";
 import FullWidthButton from "@/components/FullWidthButton";
 import FullWidthTextInput from "@/components/FullWidthTextInput";
@@ -11,8 +9,14 @@ import CannotConnectError from "@/lib/errors/CannotConnectError";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {Link, useRouter} from "expo-router";
 import UserAlreadyCreatedError from "@/lib/errors/UserAlreadyCreatedError";
+import {useTheme, Text} from "react-native-paper";
+import getStyles from "@/styles/styles";
+import getOnboardingStyles from "@/styles/OnboardingStyles";
 
 export default function CreateUser() {
+    const theme = useTheme()
+    const styles = useMemo(() => getStyles(theme), [theme])
+    const OnboardingStyles = useMemo(() => getOnboardingStyles(theme), [theme])
     const router = useRouter()
 
     const [username, setUsername] = React.useState("");
@@ -55,26 +59,24 @@ export default function CreateUser() {
     }
 
     return (
-        <SafeAreaView>
-            <View style={createUserStyles.createUserView}>
-                <Text style={styles.mediumHeaderText}>Start writing</Text>
-                <Text style={styles.subtext}>
-                    <Link href={"/Login"}>
-                        Already have an account?
-                        <Text style={styles.linkText}> Log in here</Text>
-                    </Link>
-                </Text>
-                <FullWidthTextInput
-                    placeholder={"Enter username"}
-                    onChangeText={setUsername}
-                    value={username}/>
-                <FullWidthTextInput
-                    placeholder={"Enter password"}
-                    onChangeText={setPassword}
-                    value={password}
-                />
-                <FullWidthButton text={"Create User"} onPress={onCreateUserButtonPress}/>
-            </View>
+        <SafeAreaView style={OnboardingStyles.view}>
+            <Text style={styles.headerText} variant={"displayLarge"}>Start writing</Text>
+            <Text style={styles.subtext}>
+                <Link href={"/Login"}>
+                    Already have an account?
+                    <Text style={styles.linkText}> Log in here</Text>
+                </Link>
+            </Text>
+            <FullWidthTextInput
+                placeholder={"Enter username"}
+                onChangeText={setUsername}
+                value={username}/>
+            <FullWidthTextInput
+                placeholder={"Enter password"}
+                onChangeText={setPassword}
+                value={password}
+            />
+            <FullWidthButton text={"Create User"} onPress={onCreateUserButtonPress}/>
             {errorShown && (<View
             >
                 <View style={styles.centeredView}>

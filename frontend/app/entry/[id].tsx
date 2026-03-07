@@ -1,20 +1,18 @@
 // noinspection JSUnusedGlobalSymbols
 
 import {useGlobalSearchParams, useNavigation, useRouter} from "expo-router";
-import {Animated, Pressable, Text, View} from "react-native";
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import {Animated, Pressable, View} from "react-native";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import {actions, RichEditor, RichToolbar} from "react-native-pell-rich-editor";
 import {useKeyboardAnimation} from "react-native-keyboard-controller";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {format} from "date-fns";
-
-
+import {useTheme, Text} from "react-native-paper";
 import CannotConnectError from "@/lib/errors/CannotConnectError";
 import NotLoggedInError from "@/lib/errors/NotLoggedInError";
-import styles from "@/styles/styles"
 import {EntryType, isEntry} from "@/types/EntryType";
-import EntryEditorStyles from "@/styles/EntryEditorStyles";
+import getEntryEditorStyles from "@/styles/EntryEditorStyles";
 import getEntry from "@/lib/database/getEntry";
 import NoAvailableEntryError from "@/lib/errors/NoAvailableEntryError";
 import putEntry from "@/lib/database/putEntry";
@@ -22,12 +20,16 @@ import saveLocalEntry from "@/lib/local/saveLocalEntry";
 import ContextMenu from "@/components/ContextMenu";
 import deleteEntry from "@/lib/database/deleteEntry";
 import {DateTimeModal} from "@/components/DateTimeModal";
+import getStyles from "@/styles/styles";
 
 
 export default function EntryEditor() {
+    const theme = useTheme()
+    const styles = useMemo(() => getStyles(theme), [theme])
     const {offlineEntry, id} = useGlobalSearchParams<{ offlineEntry?: string, id: string }>();
     const router = useRouter()
     const navigation = useNavigation()
+    const EntryEditorStyles = useMemo(() => getEntryEditorStyles(theme), [theme])
 
     const [loaded, setLoaded] = useState(false);
     const [entry, setEntry] = useState<EntryType>();
@@ -140,7 +142,7 @@ export default function EntryEditor() {
                             <Pressable onPress={goBack}>
                                 <MaterialIcons
                                     name="arrow-back"
-                                    size={30} color="black"
+                                    size={30} color={theme.colors.onBackground}
                                     style={EntryEditorStyles.backIcon}/>
                             </Pressable>
                             <Text style={EntryEditorStyles.title}>{dateText}</Text>
@@ -158,6 +160,7 @@ export default function EntryEditor() {
                                     }
                                 }}
                                 style={{flex: 1}}
+                                editorStyle={EntryEditorStyles.editorStyle}
                             />
                         </View>
                         <Animated.View
@@ -183,9 +186,13 @@ export default function EntryEditor() {
                                         actions.code,
                                     ]}
                                     iconMap={{
-                                        "menu": () => <MaterialIcons name="menu" size={24} color={"gray"}/>
+                                        "menu": () => <MaterialIcons name="menu" size={24}
+                                                                     color={theme.colors.onBackground}/>
                                     }}
                                     menu={showMenu}
+                                    iconTint={theme.colors.onBackground}
+                                    selectedIconTint={theme.colors.primary}
+                                    style={EntryEditorStyles.toolbar}
                                 />
                             </View>
                         </Animated.View>
