@@ -40,7 +40,7 @@ export function DateTimeModal({initialTime, onChange, onClosePress, visible}: Da
     const showTimepicker = () => showMode('time');
 
     useEffect(() => {
-        setDateText(format(date, "dd/MM/yy"))
+        setDateText(format(date, "ccc, do 'of' MMMM, yyyy"))
     }, [date]);
 
     useEffect(() => {
