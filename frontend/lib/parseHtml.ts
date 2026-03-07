@@ -18,6 +18,12 @@ export default function parseHtml(html: string): Segment[] {
 
     const stack: typeof currentStyle[] = [];
 
+    const addLineBreak = () => {
+        if (segments[segments.length - 1].text !== "\n") {
+            segments.push({text: "\n"});
+        }
+    }
+
     // noinspection SpellCheckingInspection
     const parser = new Parser({
         onopentag(name) {
@@ -33,7 +39,7 @@ export default function parseHtml(html: string): Segment[] {
                 currentStyle.underline = true;
             }
             if (name === "br") {
-                segments.push({text: "\n"});
+                addLineBreak()
             }
         },
 
@@ -46,17 +52,24 @@ export default function parseHtml(html: string): Segment[] {
             });
         },
 
-        onclosetag() {
+        onclosetag(name) {
             currentStyle = stack.pop() ?? {
                 bold: false,
                 italic: false,
                 underline: false,
             };
+            if (name === "div") {
+                addLineBreak()
+            }
         },
     });
 
     parser.write(html);
     parser.end();
+
+    if (segments[segments.length - 1].text === "\n") {
+        segments.pop()
+    }
 
     return segments;
 }
