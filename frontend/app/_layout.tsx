@@ -5,11 +5,14 @@ import {StatusBar, useColorScheme} from "react-native";
 import {KeyboardProvider} from "react-native-keyboard-controller";
 import {MD3DarkTheme, MD3LightTheme, PaperProvider} from "react-native-paper";
 import {useMaterial3Theme} from '@pchmn/expo-material3-theme';
+import {enGB, registerTranslation} from 'react-native-paper-dates'
 
 
 export default function RootLayout() {
     const colorScheme = useColorScheme();
     const {theme} = useMaterial3Theme();
+
+    registerTranslation('en-GB', enGB)
 
     const currentTheme = colorScheme === 'dark'
         ? {...MD3DarkTheme, colors: theme.dark}

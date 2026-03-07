@@ -1,12 +1,13 @@
 import {Modal, Pressable, View} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
-import {useEffect, useMemo, useState} from "react";
-import {DateTimePickerAndroid, DateTimePickerEvent} from "@react-native-community/datetimepicker";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {format} from "date-fns";
 import {useTheme, Text} from "react-native-paper";
 import getStyles from "@/styles/styles";
 import getDateTimeModalStyles from "@/styles/DateTimeModalStyles";
 import ButtonNoBackground from "@/components/ButtonNoBackground";
+import {TimePickerModal, DatePickerModal} from "react-native-paper-dates";
+import {SingleChange} from "react-native-paper-dates/src/Date/Calendar";
 
 type DateTimeModalProps = {
     initialTime: Date,
@@ -23,34 +24,35 @@ export function DateTimeModal({initialTime, onChange, onClosePress, visible}: Da
     const [date, setDate] = useState(initialTime);
     const [dateText, setDateText] = useState("")
     const [timeText, setTimeText] = useState("")
+    const [timePickerVisible, setTimePickerVisible] = useState(false)
+    const [datePickerVisible, setDatePickerVisible] = useState(false)
 
-    const internalOnChange = (_event: DateTimePickerEvent, date?: Date | undefined) => {
-        if (date !== undefined) {
-            setDate(date);
-            onChange(date);
-        }
-    };
+    const onTimeSave = ({hours, minutes}: { hours: number, minutes: number }) => {
+        const newDate = date;
+        newDate.setHours(hours, minutes);
+        setDate(newDate);
+        onChange(newDate);
+        setTimePickerVisible(false);
+        updateText()
+    }
 
-    const showMode = (currentMode: "date" | "time") => {
-        DateTimePickerAndroid.open({
-            value: date,
-            onChange: internalOnChange,
-            mode: currentMode,
-            is24Hour: true,
-        });
-    };
+    const onDateSave = (params: { date: Date; }) => {
+        setDate(params.date)
+        onChange(params.date)
+        setDatePickerVisible(false)
+        updateText()
+    }
 
-    const showDatepicker = () => showMode('date');
-    const showTimepicker = () => showMode('time');
 
-    useEffect(() => {
+    const showDatepicker = () => setDatePickerVisible(true);
+    const showTimepicker = () => setTimePickerVisible(true);
+
+    const updateText = useCallback(() => {
         setDateText(format(date, "ccc, do 'of' MMMM, yyyy"))
-    }, [date]);
-
-    useEffect(() => {
         setTimeText(format(date, "HH:mm"))
-    }, [date]);
+    }, [date])
 
+    useEffect(updateText, [updateText, date]);
 
     return (
         <Modal
@@ -59,6 +61,23 @@ export function DateTimeModal({initialTime, onChange, onClosePress, visible}: Da
             animationType={"fade"}
             onRequestClose={onClosePress}
         >
+            <TimePickerModal
+                visible={timePickerVisible}
+                onDismiss={() => setTimePickerVisible(false)}
+                onConfirm={onTimeSave}
+                hours={date.getHours()}
+                minutes={date.getMinutes()}
+                use24HourClock={true}
+                animationType={"fade"}
+            />
+            <DatePickerModal
+                locale={"en-GB"}
+                mode="single"
+                visible={datePickerVisible}
+                onDismiss={() => setDatePickerVisible(false)}
+                date={date}
+                onConfirm={(onDateSave as SingleChange)}
+            />
             <Pressable onPress={onClosePress} style={{flex: 1}}>
                 <SafeAreaView style={[styles.centeredView, {flex: 1}]}>
                     <View style={DateTimeModalStyles.menuBox}>
