@@ -42,7 +42,7 @@ function Entry({entry, setContextMenuVisible, setMenuPosition, setCurrentEntry, 
         >
             <View style={EntryStyles.view}>
                 <Html html={entry.body}/>
-                <Text style={EntryStyles.timestamp}>{timeText}</Text>
+                <Text style={EntryStyles.timestamp} variant={"labelSmall"}>{timeText}</Text>
             </View>
             {showDivider && <Divider/>}
         </Pressable>

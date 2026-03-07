@@ -20,6 +20,7 @@ export default function Html({html}: HtmlProps) {
                             fontStyle: seg.italic ? "italic" : undefined,
                             textDecorationLine: seg.underline ? "underline" : undefined,
                         }}
+                        variant={"bodyLarge"}
                     >
                         {seg.text}
                     </Text>)
