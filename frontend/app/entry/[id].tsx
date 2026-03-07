@@ -221,24 +221,25 @@ export default function EntryEditor() {
                     }
                 ]}
             />
-            <DateTimeModal
-                initialTime={new Date()}
-                onChange={(date) => {
-                    console.log(date.toString())
-                    setEntry((e) => {
-                        if (e !== undefined) {
-                            e.created = date.toString()
-                            return e
-                        } else {
-                            console.warn("changed date with a non initialised entry")
-                            return undefined
-                        }
-                    })
-                    updateEntry()
-                }}
-                onClosePress={() => setDatetimeMenuVisible(false)}
-                visible={datetimeMenuVisible}
-            />
+            {entry && (
+                <DateTimeModal
+                    initialTime={new Date(entry.created)}
+                    onChange={(date) => {
+                        setEntry((e) => {
+                            if (e !== undefined) {
+                                e.created = date.toString()
+                                return e
+                            } else {
+                                console.warn("changed date with a non initialised entry")
+                                return undefined
+                            }
+                        })
+                        updateEntry()
+                    }}
+                    onClosePress={() => setDatetimeMenuVisible(false)}
+                    visible={datetimeMenuVisible}
+                />)
+            }
         </View>
     )
 }
