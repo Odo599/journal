@@ -1,14 +1,16 @@
-import {FlatList, RefreshControl, Text, View} from "react-native"
+import {RefreshControl, SectionList, View} from "react-native"
 import {useCallback, useEffect, useState} from "react";
 import {useFocusEffect, useRouter} from "expo-router";
-
+import {Text} from "react-native-paper"
 import NotLoggedInError from "@/lib/errors/NotLoggedInError";
-import Entry from "@/components/Entry";
 import {EntryType} from "@/types/EntryType";
 import TopHeader from "@/components/TopHeader";
 import getEntries from "@/lib/database/getEntries";
 import ContextMenu from "@/components/ContextMenu";
 import deleteEntry from "@/lib/database/deleteEntry";
+import _ from "lodash";
+import {MonthHeader} from "@/components/MonthHeader";
+import DaySection from "@/components/DaySection";
 
 
 export default function EntriesView() {
@@ -32,6 +34,7 @@ export default function EntriesView() {
             try {
                 const entries = await getEntries()
                 setEntries(entries)
+                console.log(groupEntries(entries))
             } catch (error) {
                 if (error instanceof NotLoggedInError) {
                     console.error("can't display entries, redirecting to login");
@@ -57,6 +60,36 @@ export default function EntriesView() {
         }, [updateEntries]
     )
 
+    const groupEntries = (entries: EntryType[]) => {
+        const monthGroups = _.groupBy(entries, (e: EntryType) => {
+            const d = new Date(e.created)
+            return `${d.getFullYear()}-${d.getMonth()}`
+        })
+
+        return Object.entries(monthGroups).map(([monthKey, monthEntries]) => {
+            const dayGroups = _.groupBy(monthEntries, (e: EntryType) => {
+                const d = new Date(e.created)
+                return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
+            })
+
+            const days = Object.entries(dayGroups).map(([day, dayEntries]) => ({
+                title: day,
+                data: dayEntries
+            }))
+
+            const [year, month] = monthKey.split("-").map(Number)
+            const title = new Date(year, month).toLocaleString("en-US", {
+                month: "long",
+                year: "numeric"
+            })
+
+            return {
+                title,
+                data: days
+            }
+        })
+    }
+
     useEffect(() => {
         void updateEntries()
     }, [router, updateEntries])
@@ -71,26 +104,23 @@ export default function EntriesView() {
         <>
             <View>
                 {statusShown && <Text>{statusText}</Text>}
-
-                <FlatList
-                    data={entries.sort((a, b) => Date.parse(b.created) - Date.parse(a.created))}
-                    keyExtractor={(item) => item.id.toString() + item.offline}
-                    ListHeaderComponent={TopHeader}
-                    refreshing={isRefreshing}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={isRefreshing}
-                            onRefresh={onRefresh}
-                        />
-                    }
+                <SectionList
+                    sections={groupEntries(entries)}
                     renderItem={({item}) => (
-                        <Entry
-                            entry={item}
-                            setContextMenuVisible={setContextMenuVisible}
+                        <DaySection
+                            daySection={item}
                             setMenuPosition={setMenuPosition}
+                            setContextMenuVisible={setContextMenuVisible}
                             setCurrentEntry={setSelectedEntry}
                         />
                     )}
+                    renderSectionHeader={({section: {title}}) => <MonthHeader month={title}/>}
+                    ListHeaderComponent={TopHeader}
+                    refreshing={isRefreshing}
+                    refreshControl={<RefreshControl
+                        refreshing={isRefreshing}
+                        onRefresh={onRefresh}
+                    />}
                 />
             </View>
             <ContextMenu

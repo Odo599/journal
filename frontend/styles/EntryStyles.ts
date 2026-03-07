@@ -6,8 +6,8 @@ const getEntryStyles = (theme: MD3Theme) => {
         view: {
             marginHorizontal: 12,
             marginTop: 5,
-            borderBottomWidth: 1.7,
-            borderColor: theme.colors.outline,
+            // borderBottomWidth: 1.7,
+            // borderColor: theme.colors.outline,
             paddingBottom: 5
         },
         body: {
