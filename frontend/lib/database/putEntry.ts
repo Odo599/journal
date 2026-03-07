@@ -6,7 +6,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default async function putEntry(e: EntryType) {
     if (e.offline) {
-        console.log("updating offline entry")
         try {
             const server_entry = await createServerEntry(e.body, e.created)
             if (server_entry !== null) {
@@ -15,13 +14,13 @@ export default async function putEntry(e: EntryType) {
                 e.offline = false
             }
         } catch {
-            console.log("error when uploading offline entry to server, continuing as offline")
+            console.warn("error when uploading offline entry to server, continuing as offline")
         }
     }
     try {
         await putServerEntry(e)
     } catch (error) {
-        console.warn("error when putting entry", error)
+        console.error("error when putting entry", error)
     }
     return await saveLocalEntry(e)
 }

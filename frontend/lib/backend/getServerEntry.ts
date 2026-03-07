@@ -35,7 +35,7 @@ export default async function getServerEntry(id: number): Promise<EntryType | nu
     if (isEntry(output)) {
         return output
     } else {
-        console.warn("malformed server entry", output)
+        console.error("malformed server entry", output)
         return null
     }
 }

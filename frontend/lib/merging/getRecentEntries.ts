@@ -29,7 +29,7 @@ export default async function getRecentEntries(e1: EntryType[], e2: EntryType[])
         if (isEntry(e[1])) {
             mergedEntries.push(e[1])
         } else {
-            console.warn("malformed entry while resolving recent entries", e)
+            console.error("malformed entry while resolving recent entries", e)
         }
     })
 

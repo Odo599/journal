@@ -13,12 +13,11 @@ export default async function getEntries(): Promise<EntryType[]> {
             if (error instanceof NotLoggedInError) {
                 throw error
             }
-            console.warn("error when getting server entries", error)
+            console.error("error when getting server entries", error)
             return null
         }
     })()
     if (serverEntries === null) {
-        console.log("returning local entries, server entries is null", localEntries)
         return localEntries
     }
     return getRecentEntries(localEntries, serverEntries)

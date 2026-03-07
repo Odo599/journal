@@ -13,10 +13,10 @@ export default async function getLocalEntries(): Promise<EntryType[]> {
                 if (isEntry(entry_parsed)) {
                     entries.push(entry_parsed)
                 } else {
-                    console.warn("incorrectly parsed entry", entry_parsed)
+                    console.error("incorrectly parsed entry", entry_parsed)
                 }
             } else {
-                console.warn("removing null entry with key", keys[i])
+                console.error("removing null entry with key", keys[i])
                 await AsyncStorage.removeItem(keys[i])
             }
         }

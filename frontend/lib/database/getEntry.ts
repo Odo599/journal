@@ -9,8 +9,6 @@ export default async function getEntry(id: number, offline: boolean): Promise<En
     const localEntry = await getLocalEntry(id, false)
     const serverEntry = await getServerEntry(id)
 
-    console.log(localEntry, serverEntry)
-
     const recentEntry = getRecentEntry(localEntry, serverEntry)
     if (recentEntry === false) return serverEntry
     return recentEntry

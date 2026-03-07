@@ -34,11 +34,11 @@ export default async function getServerEntries(): Promise<EntryType[]> {
             if (isEntry(output[i])) {
                 entries.push(output[i])
             } else {
-                console.warn("malformed server entry", output[i])
+                console.error("malformed server entry", output[i])
             }
         }
     } else {
-        console.warn("server did not return array", output)
+        console.error("server did not return array", output)
     }
 
     const deletedEntries = await getEntriesToDelete()

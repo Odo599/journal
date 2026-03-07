@@ -13,7 +13,7 @@ export default async function getLocalEntry(id: number, offline: boolean): Promi
     if (isEntry(entry)) {
         return entry
     } else {
-        console.warn("local db entry was not valid", storageKey, entry)
+        console.error("local db entry was not valid", storageKey, entry)
         return null
     }
 }

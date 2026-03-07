@@ -37,7 +37,7 @@ export default function EntriesView() {
                     console.error("can't display entries, redirecting to login");
                     router.navigate("/Welcome")
                 } else {
-                    console.log("error when updating entries ", error)
+                    console.error("error when updating entries ", error)
                     showStatus("there was an error when loading the entries, please reload or connect to wifi")
                 }
 
@@ -46,11 +46,9 @@ export default function EntriesView() {
     )
 
     const onRefresh = useCallback(async () => {
-            console.log("refreshing home page")
             setIsRefreshing(true)
             try {
                 await updateEntries()
-                console.log("refreshed home page")
             } catch (error) {
                 console.error("error while refreshing home page", error)
             } finally {

@@ -7,7 +7,7 @@ export default async function getNewOfflineId(): Promise<number> {
         if (key.startsWith("offline_entry_")) {
             const id = Number(key.slice(14, key.length))
             if (!isNaN(id)) ids.push(id)
-            else console.warn("non integer id detected with key", key)
+            else console.error("non integer id detected with key", key)
         }
     })
 

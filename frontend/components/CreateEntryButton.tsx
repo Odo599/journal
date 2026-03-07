@@ -13,7 +13,6 @@ export function CreateEntryButton() {
         (async () => {
             try {
                 const entry = await createEntry()
-                console.log(entry)
                 if (!isNaN(entry.id)) {
                     if (entry.offline) {
                         router.navigate(`/entry/${entry.id}?offlineEntry=true`)

@@ -7,7 +7,7 @@ export default async function addEntryToDelete(entry: EntryType) {
     if (Array.isArray(current) && current.every((e) => isEntry(e))) {
         current.push(entry)
     } else {
-        console.log("unexpected entries_to_delete value", currentStr)
+        console.error("unexpected entries_to_delete value", currentStr)
         current = []
     }
     console.log(current)

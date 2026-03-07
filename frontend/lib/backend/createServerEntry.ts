@@ -47,7 +47,7 @@ export default async function createServerEntry(body: string, created: string): 
                 body: body
             }
         } else {
-            console.warn("creat ")
+            console.error("non number response received", output)
             return null
         }
     } catch (error) {
