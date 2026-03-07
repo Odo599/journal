@@ -21,6 +21,7 @@ import putEntry from "@/lib/database/putEntry";
 import saveLocalEntry from "@/lib/local/saveLocalEntry";
 import ContextMenu from "@/components/ContextMenu";
 import deleteEntry from "@/lib/database/deleteEntry";
+import {DateTimeModal} from "@/components/DateTimeModal";
 
 
 export default function EntryEditor() {
@@ -35,6 +36,7 @@ export default function EntryEditor() {
     const [dateText, setDateText] = useState("")
     const [menuVisible, setMenuVisible] = useState(false)
     const [menuPosition, setMenuPosition] = useState({x: 0, y: 0})
+    const [datetimeMenuVisible, setDatetimeMenuVisible] = useState(false)
 
     const editorRef = useRef<RichEditor>(null);
     const richToolbarContainerRef = useRef<View>(null)
@@ -69,6 +71,19 @@ export default function EntryEditor() {
 
     }, [])
 
+    const updateEntry = useCallback(() => {
+        if (entry !== undefined) {
+            console.log("saving entry");
+            (async () => {
+                try {
+                    await putEntry(entry)
+                } catch (error) {
+                    console.error("error while saving entry", error)
+                }
+            })()
+        }
+    }, [entry])
+
     useEffect(() => {
         (async () => {
             if (Number.isNaN(Number(id))) {
@@ -99,19 +114,8 @@ export default function EntryEditor() {
     }, [getOffline, id, router])
 
     useEffect(() => {
-        return navigation.addListener('beforeRemove', () => {
-            if (entry !== undefined) {
-                console.log("saving entry");
-                (async () => {
-                    try {
-                        await putEntry(entry)
-                    } catch (error) {
-                        console.error("error while saving entry before leaving editor", error)
-                    }
-                })()
-            }
-        })
-    }, [entry, getOffline, id, navigation]);
+        return navigation.addListener('beforeRemove', updateEntry)
+    }, [entry, getOffline, id, navigation, updateEntry]);
 
     useEffect(() => {
         if (entry?.created) {
@@ -196,20 +200,44 @@ export default function EntryEditor() {
                     horizontal: "left",
                     vertical: "bottom"
                 }}
-                items={[{
-                    text: "Delete",
-                    closeOnPress: true,
-                    onPress: () => {
-                        (async () => {
-                            if (entry) {
-                                await deleteEntry(entry)
-                                router.navigate("/")
-                            }
-                        })()
-
+                items={[
+                    {
+                        text: "Delete",
+                        closeOnPress: true,
+                        destructive: true,
+                        onPress: () => {
+                            (async () => {
+                                if (entry) {
+                                    await deleteEntry(entry)
+                                    router.navigate("/")
+                                }
+                            })()
+                        },
                     },
-                    destructive: true
-                }]}
+                    {
+                        text: "Edit date",
+                        closeOnPress: true,
+                        onPress: () => setDatetimeMenuVisible(true)
+                    }
+                ]}
+            />
+            <DateTimeModal
+                initialTime={new Date()}
+                onChange={(date) => {
+                    console.log(date.toString())
+                    setEntry((e) => {
+                        if (e !== undefined) {
+                            e.created = date.toString()
+                            return e
+                        } else {
+                            console.warn("changed date with a non initialised entry")
+                            return undefined
+                        }
+                    })
+                    updateEntry()
+                }}
+                onClosePress={() => setDatetimeMenuVisible(false)}
+                visible={datetimeMenuVisible}
             />
         </View>
     )

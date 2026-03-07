@@ -19,6 +19,11 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center"
     },
+    noBackgroundButton: {
+        height: 40,
+        justifyContent: "center",
+        alignItems: "center"
+    },
     centeredView: {
         marginTop: 10,
         justifyContent: 'center',
@@ -36,6 +41,9 @@ const styles = StyleSheet.create({
         margin: 10,
         fontFamily: "SourceSansPro_700Bold",
     },
+    headingText: {
+        fontSize: 30
+    },
     subtext: {
         textAlign: "center",
         fontSize: 15,
@@ -46,6 +54,9 @@ const styles = StyleSheet.create({
     },
     linkText: {
         color: "#1a73e8"
+    },
+    alignRight: {
+        marginLeft: "auto"
     }
 })
 export default styles;
