@@ -22,7 +22,7 @@ export default function Html({html}: HtmlProps) {
                         }}
                         variant={"bodyLarge"}
                     >
-                        {seg.text}
+                        {seg?.text}
                     </Text>)
             })}
         </Text>

@@ -1,5 +1,5 @@
 import {View} from "react-native";
-import {Text, useTheme} from "react-native-paper";
+import {Text} from "react-native-paper";
 import {useMemo} from "react";
 import {parse, format} from "date-fns";
 import getMonthHeaderStyles from "@/styles/MonthHeaderStyles";
@@ -9,8 +9,7 @@ type MonthHeaderProps = {
 }
 
 export function MonthHeader({month}: MonthHeaderProps) {
-    const theme = useTheme()
-    const MonthHeaderStyles = useMemo(() => getMonthHeaderStyles(theme), [theme])
+    const MonthHeaderStyles = useMemo(() => getMonthHeaderStyles(), [])
 
     const formatDate = () => {
         const date = parse(month, "MMMM yyyy", new Date())
