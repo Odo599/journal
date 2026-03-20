@@ -23,8 +23,7 @@ function Entry({entry, setContextMenuVisible, setMenuPosition, setCurrentEntry, 
     const [timeText, setTimeText] = useState("")
 
     useEffect(() => {
-        const created = new Date(Date.parse(entry.created))
-        setTimeText(format(created, "HH:mm"))
+        setTimeText(format(entry.created, "HH:mm"))
     }, [entry.created]);
 
     return (

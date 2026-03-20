@@ -14,14 +14,10 @@ export function CreateEntryButton() {
         (async () => {
             try {
                 const entry = await createEntry()
-                if (!isNaN(entry.id)) {
-                    if (entry.offline) {
-                        router.navigate(`/entry/${entry.id}?offlineEntry=true`)
-                    } else {
-                        router.navigate(`/entry/${entry.id}`)
-                    }
+                if (entry.offline) {
+                    router.navigate(`/entry/${entry.id}?offlineEntry=true`)
                 } else {
-                    console.error("unknown entry id value", entry.id)
+                    router.navigate(`/entry/${entry.id}`)
                 }
             } catch (e) {
                 console.error("error when creating entry", e)

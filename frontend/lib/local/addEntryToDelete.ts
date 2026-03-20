@@ -8,7 +8,7 @@ export default async function addEntryToDelete(entry: EntryType) {
         current.push(entry)
     } else {
         console.error("unexpected entries_to_delete value", currentStr)
-        current = []
+        current = [entry]
     }
     console.log(current)
     await AsyncStorage.setItem("entries_to_delete", JSON.stringify(current))

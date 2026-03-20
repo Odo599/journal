@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {EntryType, isEntry} from "@/types/EntryType";
+import dateReviver from "@/lib/dateReviver";
 
 export default async function getLocalEntries(): Promise<EntryType[]> {
     const keys = await AsyncStorage.getAllKeys()
@@ -9,7 +10,7 @@ export default async function getLocalEntries(): Promise<EntryType[]> {
         if (keys[i].startsWith("entry_") || keys[i].startsWith("offline_entry_")) {
             const entry_str = await AsyncStorage.getItem(keys[i])
             if (entry_str !== null) {
-                const entry_parsed = JSON.parse(entry_str)
+                const entry_parsed = JSON.parse(entry_str, dateReviver)
                 if (isEntry(entry_parsed)) {
                     entries.push(entry_parsed)
                 } else {

@@ -13,6 +13,10 @@ def init_db(_args):
     journal.database.init_db("journal/schema.sql")
     print("database initialed")
 
+def reset_imgs(_args):
+    print("clearing images file")
+    subprocess.run(["rm", "-rv", "instance/images"])
+
 def main():
     parser = argparse.ArgumentParser(
         prog='run.py',
@@ -25,6 +29,9 @@ def main():
 
     init_parser = subparsers.add_parser("init-db", help="Initialize the database")
     init_parser.set_defaults(func=init_db)
+
+    reset_imgs_parser = subparsers.add_parser("reset-imgs", help="Clean the images folder")
+    reset_imgs_parser.set_defaults(func=reset_imgs)
 
     args = parser.parse_args()
     args.func(args)

@@ -10,7 +10,7 @@ export default async function putServerEntry(e: EntryType): Promise<void> {
     api_key = JSON.parse(api_key)
 
 
-    const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/entries/${e.id}`
+    const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/entry`
     const response = await fetch(url,
         {
             method: "PUT",
@@ -19,14 +19,21 @@ export default async function putServerEntry(e: EntryType): Promise<void> {
                 ["Content-Type", "application/json"]
             ]),
             body: JSON.stringify({
-                "text": e.body,
-                "created": e.created,
-                "id": e.id
+                "body": e.body,
+                "created": e.created.toISOString(),
+                "last_edited": e.last_edited.toISOString(),
+                "id": e.id,
+                "image_ids": e.image_ids
             })
         }
     )
     if (response.status === 403) {
         await AsyncStorage.removeItem("api_key")
         throw new NotLoggedInError("couldn't get entries, api key was not valid")
+    }
+    if (!response.ok) {
+        void (async () => {
+            console.error("unexpected code when putting entry", e, response.status, await response.json())
+        })()
     }
 }

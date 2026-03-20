@@ -1,8 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NotLoggedInError from "@/lib/errors/NotLoggedInError";
 import {EntryType, isEntry} from "@/types/EntryType";
+import dateReviver from "@/lib/dateReviver";
 
-export default async function getServerEntry(id: number): Promise<EntryType | null> {
+export default async function getServerEntry(id: string): Promise<EntryType | null> {
     let api_key = await AsyncStorage.getItem("api_key");
     if (api_key === null) {
         throw new NotLoggedInError("couldn't get entry, database didn't have api key stored")
@@ -31,11 +32,18 @@ export default async function getServerEntry(id: number): Promise<EntryType | nu
         return null
     }
 
-    const output = await response.json()
-    if (isEntry(output)) {
-        return output
-    } else {
-        console.error("malformed server entry", output)
+    const outputText = await response.text()
+    try {
+        const output = JSON.parse(outputText, dateReviver)
+        if (isEntry(output)) {
+            return output
+        } else {
+            console.error("malformed server entry", output)
+            return null
+        }
+    } catch (e) {
+        console.error(e, outputText)
         return null
     }
+
 }

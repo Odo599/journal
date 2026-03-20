@@ -3,6 +3,7 @@ import getLocalEntries from "@/lib/local/getLocalEntries";
 import getServerEntries from "@/lib/backend/getServerEntries";
 import getRecentEntries from "@/lib/merging/getRecentEntries";
 import NotLoggedInError from "@/lib/errors/NotLoggedInError";
+import syncEntries from "@/lib/backend/syncEntries";
 
 export default async function getEntries(): Promise<EntryType[]> {
     const localEntries = await getLocalEntries()
@@ -20,5 +21,6 @@ export default async function getEntries(): Promise<EntryType[]> {
     if (serverEntries === null) {
         return localEntries
     }
+    await syncEntries(serverEntries)
     return getRecentEntries(localEntries, serverEntries)
 }

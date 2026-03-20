@@ -6,8 +6,7 @@ export default async function saveLocalEntry(e: EntryType): Promise<EntryType> {
     if (e.offline) keyId = `offline_entry_${e.id}`
     else keyId = `entry_${e.id}`
 
-    e.last_edited = new Date().getTime()
-
+    e.last_edited = new Date()
     await AsyncStorage.setItem(keyId, JSON.stringify(e))
 
     return e

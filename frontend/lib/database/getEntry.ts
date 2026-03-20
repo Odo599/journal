@@ -3,12 +3,11 @@ import getServerEntry from "@/lib/backend/getServerEntry";
 import getRecentEntry from "@/lib/merging/getRecentEntry";
 import {EntryType} from "@/types/EntryType";
 
-export default async function getEntry(id: number, offline: boolean): Promise<EntryType | null> {
+export default async function getEntry(id: string, offline: boolean): Promise<EntryType | null> {
     if (offline) return getLocalEntry(id, true)
 
     const localEntry = await getLocalEntry(id, false)
     const serverEntry = await getServerEntry(id)
-
     const recentEntry = getRecentEntry(localEntry, serverEntry)
     if (recentEntry === false) return serverEntry
     return recentEntry

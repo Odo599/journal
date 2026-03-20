@@ -3,6 +3,8 @@ import NotLoggedInError from "@/lib/errors/NotLoggedInError";
 import {EntryType, isEntry} from "@/types/EntryType";
 import getEntriesToDelete from "@/lib/local/getEntriesToDelete";
 import deleteServerEntry from "@/lib/backend/deleteServerEntry";
+import dateReviver from "@/lib/dateReviver";
+import syncEntries from "@/lib/backend/syncEntries";
 
 export default async function getServerEntries(): Promise<EntryType[]> {
     let api_key = await AsyncStorage.getItem("api_key");
@@ -26,7 +28,8 @@ export default async function getServerEntries(): Promise<EntryType[]> {
         return []
     }
 
-    const output = await response.json()
+    const outputText = await response.text()
+    const output = JSON.parse(outputText, dateReviver)
     const entries: EntryType[] = []
 
     if (Array.isArray(output)) {
@@ -40,17 +43,6 @@ export default async function getServerEntries(): Promise<EntryType[]> {
     } else {
         console.error("server did not return array", output)
     }
-
-    const deletedEntries = await getEntriesToDelete()
-    const deletePromises: Promise<boolean>[] = []
-    entries.forEach((e) => {
-        if (deletedEntries.some((de) => de.id === e.id)) {
-            deletePromises.push(deleteServerEntry(e.id))
-            entries.splice(entries.indexOf(e), 1)
-        }
-    })
-
-    await Promise.all(deletePromises)
 
     return entries
 }

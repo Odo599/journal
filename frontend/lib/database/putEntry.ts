@@ -7,7 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default async function putEntry(e: EntryType) {
     if (e.offline) {
         try {
-            const server_entry = await createServerEntry(e.body, e.created)
+            const server_entry = await createServerEntry(e)
             if (server_entry !== null) {
                 await AsyncStorage.removeItem(`offline_entry_${e.id}`)
                 e = server_entry

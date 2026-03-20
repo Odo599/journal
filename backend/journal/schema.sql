@@ -19,6 +19,13 @@ CREATE TABLE IF NOT EXISTS entries
     FOREIGN KEY (author_username) references user (username)
 );
 
+CREATE TABLE IF NOT EXISTS images
+(
+    path     TEXT PRIMARY KEY,
+    entry_id INTEGER NOT NULL,
+    FOREIGN KEY (entry_id) REFERENCES entries (id)
+);
+
 CREATE TABLE IF NOT EXISTS api_keys
 (
     id       INTEGER PRIMARY KEY AUTOINCREMENT,

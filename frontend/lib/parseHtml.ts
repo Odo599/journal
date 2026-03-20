@@ -19,7 +19,7 @@ export default function parseHtml(html: string): Segment[] {
     const stack: typeof currentStyle[] = [];
 
     const addLineBreak = () => {
-        if (segments[segments.length - 1].text !== "\n") {
+        if (segments[segments.length - 1]?.text !== "\n") {
             segments.push({text: "\n"});
         }
     }
@@ -67,7 +67,7 @@ export default function parseHtml(html: string): Segment[] {
     parser.write(html);
     parser.end();
 
-    if (segments[segments.length - 1].text === "\n") {
+    if (segments[segments.length - 1]?.text === "\n") {
         segments.pop()
     }
 

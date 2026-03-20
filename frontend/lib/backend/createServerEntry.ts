@@ -1,8 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NotLoggedInError from "@/lib/errors/NotLoggedInError";
-import {EntryType} from "@/types/EntryType";
+import {EntryType, isEntry} from "@/types/EntryType";
+import dateReviver from "../dateReviver";
 
-export default async function createServerEntry(body: string, created: string): Promise<EntryType | null> {
+export default async function createServerEntry(entry: EntryType): Promise<EntryType | null> {
     let api_key = await AsyncStorage.getItem("api_key");
     if (api_key === null) {
         throw new NotLoggedInError("couldn't get entries, database didn't have api key stored")
@@ -12,7 +13,7 @@ export default async function createServerEntry(body: string, created: string): 
     const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/createEntry`
     try {
 
-
+        console.log("input date", entry.created.toISOString())
         const response = await fetch(
             url,
             {
@@ -22,8 +23,11 @@ export default async function createServerEntry(body: string, created: string): 
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    "text": body,
-                    "created": created
+                    "body": entry.body,
+                    "created": entry.created.toISOString(),
+                    "last_edited": entry.last_edited.toISOString(),
+                    "image_ids": entry.image_ids,
+                    "id": entry.id
                 })
             })
 
@@ -38,16 +42,14 @@ export default async function createServerEntry(body: string, created: string): 
             return null
         }
 
-        const output = await response.text()
-        if (!isNaN(Number(output))) {
-            return {
-                id: Number(output),
-                created: created,
-                last_edited: new Date().valueOf(),
-                body: body
-            }
+        const outputText = await response.text()
+        console.log("server returned", outputText)
+        const output = JSON.parse(outputText, dateReviver)
+        if (isEntry(output)) {
+            console.log("output date", output.created.toISOString())
+            return output
         } else {
-            console.error("non number response received", output)
+            console.error("non entry response received", output)
             return null
         }
     } catch (error) {

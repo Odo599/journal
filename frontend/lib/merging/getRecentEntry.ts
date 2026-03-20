@@ -8,8 +8,12 @@ export default function getRecentEntry(e1: EntryType | null, e2: EntryType | nul
     } else if (e2 === null) {
         return e1
     } else {
+        const image_ids = [...new Set([...e1.image_ids, ...e2.image_ids])]
         const e1ts = e1.last_edited
         const e2ts = e2.last_edited
+
+        e1.image_ids = image_ids
+        e2.image_ids = image_ids
 
         if (e1ts === null && e2ts === null) {
             return false

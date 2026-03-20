@@ -34,7 +34,6 @@ export default function EntriesView() {
             try {
                 const entries = await getEntries()
                 setEntries(entries)
-                console.log(groupEntries(entries))
             } catch (error) {
                 if (error instanceof NotLoggedInError) {
                     console.error("can't display entries, redirecting to login");

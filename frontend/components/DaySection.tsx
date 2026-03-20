@@ -44,7 +44,7 @@ export default function DaySection({
                     daySection.data.length !== 1 ? {paddingBottom: 10} : {}
                 ]}>
                     <FlatList
-                        data={daySection.data.sort((a, b) => Date.parse(b.created) - Date.parse(a.created))}
+                        data={daySection.data.sort((a, b) => b.created.valueOf() - a.created.valueOf())}
                         renderItem={({item, index}) => {
                             return <Entry
                                 entry={item}
